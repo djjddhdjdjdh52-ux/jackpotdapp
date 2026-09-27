@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChainPump BNB 🚀 | Meme Launchpad</title>
+    <title>ChainPump BNB 🚀 | Ultimate Meme Launchpad</title>
     <!-- Ethers.js v5 -->
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <!-- Canvas Confetti -->
@@ -49,67 +49,41 @@
 
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 {
-            font-size: 26px;
-            font-weight: 800;
+            font-size: 26px; font-weight: 800;
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
         .btn-wallet {
-            width: 100%;
-            background: linear-gradient(135deg, #0284c7, #0369a1);
+            width: 100%; background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white; border: none; padding: 14px; border-radius: 12px;
             font-size: 15px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        .wallet-status {
-            font-size: 12px; color: var(--accent-blue);
-            text-align: center; margin-top: 8px; font-weight: 600;
-            word-break: break-all;
-        }
-
+        .wallet-status { font-size: 12px; color: var(--accent-blue); text-align: center; margin-top: 8px; font-weight: 600; word-break: break-all; }
         .divider { height: 1px; background: var(--border-color); margin: 20px 0; }
         .form-group { margin-bottom: 16px; }
 
-        label {
-            display: block; font-size: 13px; font-weight: 600;
-            color: var(--text-muted); margin-bottom: 6px;
-        }
-
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
         input[type="text"], input[type="number"] {
             width: 100%; padding: 12px 14px; background: #0b0f19;
             border: 1px solid var(--border-color); color: white;
             border-radius: 10px; font-size: 14px; outline: none;
         }
 
-        /* Modes Selector */
         .art-mode-selector { display: flex; gap: 8px; margin-bottom: 12px; }
         .mode-btn {
             flex: 1; padding: 10px 4px; background: #0b0f19;
             border: 1px solid var(--border-color); color: var(--text-muted);
-            border-radius: 8px; font-size: 12px; font-weight: 600;
-            cursor: pointer; text-align: center;
+            border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center;
         }
-        .mode-btn.active {
-            background: rgba(56, 189, 248, 0.1);
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
+        .mode-btn.active { background: rgba(56, 189, 248, 0.1); border-color: var(--accent-blue); color: var(--accent-blue); }
 
-        /* Boxes */
-        .sketch-box {
-            background: #0b0f19; border: 1px dashed var(--border-color);
-            border-radius: 12px; padding: 12px; text-align: center;
-        }
-
-        canvas {
-            background: #ffffff; border-radius: 8px;
-            cursor: crosshair; touch-action: none; max-width: 100%;
-        }
+        .sketch-box { background: #0b0f19; border: 1px dashed var(--border-color); border-radius: 12px; padding: 12px; text-align: center; }
+        canvas { background: #ffffff; border-radius: 8px; cursor: crosshair; touch-action: none; max-width: 100%; }
 
         .tools { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
         .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
@@ -124,24 +98,18 @@
         }
         .btn-launch:disabled { background: #374151; cursor: not-allowed; box-shadow: none; }
 
-        .status-card {
-            background: #0b0f19; border: 1px solid var(--border-color);
-            padding: 12px; border-radius: 10px; font-size: 12px;
-            color: var(--text-muted); margin-top: 15px; text-align: center; word-break: break-all;
-        }
+        .status-card { background: #0b0f19; border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; font-size: 12px; color: var(--text-muted); margin-top: 15px; text-align: center; word-break: break-all; }
 
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 20px;
-        }
-        .modal-content {
-            background: var(--card-bg); border: 1px solid var(--accent-green);
-            padding: 24px; border-radius: 20px; text-align: center; max-width: 400px; width: 100%;
-        }
-        .btn-twitter {
-            background: #1da1f2; color: white; text-decoration: none; display: inline-flex;
-            align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-weight: bold; margin-top: 15px; font-size: 14px;
-        }
+        /* Modal & LaunchKit */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--accent-green); padding: 20px; border-radius: 20px; text-align: center; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        
+        .launchkit-box { background: #0b0f19; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-top: 12px; text-align: left; }
+        .launchkit-title { font-size: 12px; color: var(--accent-blue); font-weight: bold; margin-bottom: 6px; }
+        .lore-text { font-size: 11px; color: var(--text-muted); font-style: italic; background: #111827; padding: 8px; border-radius: 6px; }
+
+        .btn-twitter { background: #1da1f2; color: white; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 8px; font-size: 13px; width: 100%; }
+        .btn-copy { background: #374151; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 11px; cursor: pointer; width: 100%; margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -149,7 +117,7 @@
 <div class="app-container">
     <div class="header">
         <h1>⚡ ChainPump BNB 🔥</h1>
-        <p>Launch Instant Memecoins on BNB Smart Chain</p>
+        <p>Launch Instant Memecoins + AI Marketing Pack</p>
     </div>
 
     <button class="btn-wallet" id="walletBtn" onclick="connectWallet()">
@@ -169,7 +137,6 @@
         <input type="text" id="tokenSymbol" value="CPUMP">
     </div>
 
-    <!-- Mode Selector -->
     <label><i class="fa-solid fa-image"></i> Token Logo Source</label>
     <div class="art-mode-selector">
         <button class="mode-btn active" id="btnModeDoodle" onclick="switchArtMode('doodle')">🎨 Doodle</button>
@@ -177,7 +144,6 @@
         <button class="mode-btn" id="btnModeUpload" onclick="switchArtMode('upload')">📁 Upload</button>
     </div>
 
-    <!-- 1. Doodle Mode -->
     <div class="sketch-box" id="doodleSection">
         <canvas id="sketchpad" width="260" height="180"></canvas>
         <div class="tools">
@@ -186,7 +152,6 @@
         </div>
     </div>
 
-    <!-- 2. AI Mode -->
     <div class="sketch-box" id="aiSection" style="display: none;">
         <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Auto-creates a unique logo based on your token name!</p>
         <div id="aiPreview" style="height: 140px; background: #1f2937; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 8px;">
@@ -195,7 +160,6 @@
         <button class="btn-action" onclick="generateAIArt()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Logo Now</button>
     </div>
 
-    <!-- 3. Upload Mode -->
     <div class="sketch-box" id="uploadSection" style="display: none;">
         <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Select a logo from your device</p>
         <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" style="display: none;">
@@ -217,18 +181,29 @@
     <div class="status-card" id="outputStatus">Status: Ready to connect wallet</div>
 </div>
 
-<!-- Success Modal -->
+<!-- Success Modal with AI Viral LaunchKit -->
 <div class="modal" id="successModal">
     <div class="modal-content">
-        <h2 style="color: var(--accent-green); font-size: 22px; margin-bottom: 8px;">🎉 Launch Successful!</h2>
-        <p style="font-size: 13px; color: var(--text-muted);">Your Meme Token is live on BNB Smart Chain!</p>
-        <p id="modalTxHash" style="font-size: 11px; color: var(--accent-blue); margin-top: 10px; word-break: break-all;"></p>
+        <h2 style="color: var(--accent-green); font-size: 20px;">🎉 Token Live + AI LaunchKit Ready!</h2>
         
+        <!-- Generated Card Preview -->
+        <div style="margin-top: 10px;">
+            <canvas id="cardCanvas" width="360" height="180" style="width:100%; border-radius: 10px; border: 1px solid var(--accent-green);"></canvas>
+            <button class="btn-copy" onclick="downloadMemeCard()"><i class="fa-solid fa-download"></i> Download Promo Banner Card</button>
+        </div>
+
+        <div class="launchkit-box">
+            <div class="launchkit-title">📖 Generated AI Meme Lore:</div>
+            <div class="lore-text" id="aiLoreText">Loading story...</div>
+        </div>
+
         <a id="twitterShareBtn" href="#" target="_blank" class="btn-twitter">
-            <i class="fa-brands fa-x-twitter"></i> Start Twitter Raid Now 🚀
+            <i class="fa-brands fa-x-twitter"></i> Launch Twitter Raid Now
         </a>
-        <br>
-        <button onclick="closeModal()" style="background: transparent; border: none; color: var(--text-muted); margin-top: 15px; cursor: pointer; font-size: 12px;">Close</button>
+
+        <button class="btn-copy" onclick="copyTelegramMsg()"><i class="fa-solid fa-copy"></i> Copy Telegram Raid Template</button>
+        
+        <button onclick="closeModal()" style="background: transparent; border: none; color: var(--text-muted); margin-top: 12px; cursor: pointer; font-size: 12px;">Close Window</button>
     </div>
 </div>
 
@@ -244,16 +219,13 @@
     let currentArtMode = 'doodle';
     let generatedAiImageUrl = '';
     let uploadedImageUrl = '';
+    let currentTxHash = '';
 
-    // --- Canvas Setup ---
     const canvas = document.getElementById("sketchpad");
     const ctx = canvas.getContext("2d");
     let painting = false;
 
-    function initCanvas() {
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+    function initCanvas() { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
     initCanvas();
 
     function startPosition(e) { painting = true; draw(e); }
@@ -266,14 +238,9 @@
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         
-        ctx.lineWidth = 4;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = document.getElementById("colorPicker").value;
-
+        ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.strokeStyle = document.getElementById("colorPicker").value;
         ctx.lineTo(clientX - rect.left, clientY - rect.top);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(clientX - rect.left, clientY - rect.top);
+        ctx.stroke(); ctx.beginPath(); ctx.moveTo(clientX - rect.left, clientY - rect.top);
     }
 
     canvas.addEventListener("mousedown", startPosition);
@@ -285,7 +252,6 @@
 
     function clearCanvas() { initCanvas(); }
 
-    // --- Mode Switcher ---
     function switchArtMode(mode) {
         currentArtMode = mode;
         document.getElementById("btnModeDoodle").classList.toggle("active", mode === 'doodle');
@@ -297,7 +263,6 @@
         document.getElementById("uploadSection").style.display = mode === 'upload' ? 'block' : 'none';
     }
 
-    // --- AI Art Generator ---
     async function generateAIArt() {
         const name = document.getElementById("tokenName").value || "Crypto Gem";
         const prompt = encodeURIComponent(`cute funny meme mascot logo for crypto coin named ${name}, 2d vector art, white background`);
@@ -313,12 +278,9 @@
             previewBox.innerHTML = `<img src="${aiUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
             generatedAiImageUrl = aiUrl;
         };
-        img.onerror = () => {
-            previewBox.innerHTML = `<span style="font-size: 12px; color: #ef4444;">Failed to generate. Try again.</span>`;
-        };
+        img.onerror = () => { previewBox.innerHTML = `<span style="font-size: 12px; color: #ef4444;">Failed to generate. Try again.</span>`; };
     }
 
-    // --- Image Upload Handler ---
     function handleImageUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -328,13 +290,10 @@
             const img = new Image();
             img.onload = function() {
                 const tempCanvas = document.createElement("canvas");
-                tempCanvas.width = 128;
-                tempCanvas.height = 128;
+                tempCanvas.width = 128; tempCanvas.height = 128;
                 const tempCtx = tempCanvas.getContext("2d");
                 tempCtx.drawImage(img, 0, 0, 128, 128);
-                
                 uploadedImageUrl = tempCanvas.toDataURL("image/png", 0.7);
-
                 document.getElementById("previewImg").src = uploadedImageUrl;
                 document.getElementById("uploadPreview").style.display = "flex";
             };
@@ -343,152 +302,132 @@
         reader.readAsDataURL(file);
     }
 
-    // --- Web3 Connection ---
     async function connectWallet() {
-        if (!window.ethereum) {
-            alert("Please install MetaMask or use Web3 Browser!");
-            return;
-        }
-
+        if (!window.ethereum) { alert("Please install MetaMask or Web3 Browser!"); return; }
         try {
             provider = new ethers.providers.Web3Provider(window.ethereum);
             await provider.send("eth_requestAccounts", []);
-            
             const network = await provider.getNetwork();
-            if (network.chainId !== 56) {
-                await switchNetwork();
-                return;
-            }
+            if (network.chainId !== 56) { await switchNetwork(); return; }
 
             signer = provider.getSigner();
             const address = await signer.getAddress();
-            
             document.getElementById("walletAddress").innerText = "Connected: " + address.substring(0, 6) + "..." + address.substring(address.length - 4);
             document.getElementById("walletBtn").innerHTML = `<i class="fa-solid fa-check-circle"></i> Wallet Connected`;
             document.getElementById("walletBtn").style.background = "#059669";
 
             factoryContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
             document.getElementById("outputStatus").innerText = "Status: Connected & ready to launch!";
-
-            window.ethereum.on('accountsChanged', () => window.location.reload());
-            window.ethereum.on('chainChanged', () => window.location.reload());
-
         } catch (error) {
-            console.error(error);
             document.getElementById("outputStatus").innerText = "Error: " + (error.message || "Failed to connect");
         }
     }
 
     async function switchNetwork() {
         try {
-            await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: BSC_CHAIN_ID }],
-            });
+            await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_CHAIN_ID }] });
             connectWallet();
-        } catch (switchError) {
-            if (switchError.code === 4902) {
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainId: BSC_CHAIN_ID,
-                            chainName: 'BNB Smart Chain Mainnet',
-                            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
-                            rpcUrls: ['https://bsc-dataseed.binance.org/'],
-                            blockExplorerUrls: ['https://bscscan.com/']
-                        }],
-                    });
-                    connectWallet();
-                } catch (addError) {
-                    alert("Please switch your wallet to BNB Smart Chain Mainnet!");
-                }
-            }
-        }
+        } catch (e) { alert("Please switch your wallet to BNB Smart Chain Mainnet!"); }
     }
 
     function getOptimizedCanvasData() {
         const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = 128;
-        tempCanvas.height = 128;
+        tempCanvas.width = 128; tempCanvas.height = 128;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx.drawImage(canvas, 0, 0, 128, 128);
         return tempCanvas.toDataURL("image/png", 0.7);
     }
 
-    // --- Create Token ---
     async function createToken() {
-        if (!factoryContract) {
-            await connectWallet();
-            if (!factoryContract) return;
-        }
+        if (!factoryContract) { await connectWallet(); if (!factoryContract) return; }
 
         const name = document.getElementById("tokenName").value.trim();
         const symbol = document.getElementById("tokenSymbol").value.trim();
         const bnbAmount = document.getElementById("buyAmount").value;
 
-        if (!name || !symbol) {
-            alert("Please enter Token Name and Symbol!");
-            return;
-        }
+        if (!name || !symbol) { alert("Please enter Name & Symbol!"); return; }
+        if (parseFloat(bnbAmount) < 0.01) { alert("Min amount is 0.01 BNB!"); return; }
 
-        if (parseFloat(bnbAmount) < 0.01) {
-            alert("Minimum initial amount is 0.01 BNB!");
-            return;
-        }
-
-        let finalTokenURI = "";
-        if (currentArtMode === 'ai' && generatedAiImageUrl) {
-            finalTokenURI = generatedAiImageUrl;
-        } else if (currentArtMode === 'upload' && uploadedImageUrl) {
-            finalTokenURI = uploadedImageUrl;
-        } else {
-            finalTokenURI = getOptimizedCanvasData();
-        }
-
-        if (currentArtMode === 'upload' && !uploadedImageUrl) {
-            alert("Please select an image file first!");
-            return;
-        }
+        let finalTokenURI = currentArtMode === 'ai' ? generatedAiImageUrl : (currentArtMode === 'upload' ? uploadedImageUrl : getOptimizedCanvasData());
+        if (currentArtMode === 'upload' && !uploadedImageUrl) { alert("Please select an image file!"); return; }
 
         const launchBtn = document.getElementById("launchBtn");
-        launchBtn.disabled = true;
-        launchBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Launching Token...`;
+        launchBtn.disabled = true; launchBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Launching...`;
 
         try {
-            document.getElementById("outputStatus").innerText = "Status: Confirm in wallet...";
-            
-            const tx = await factoryContract.createToken(name, symbol, finalTokenURI, {
-                value: ethers.utils.parseEther(bnbAmount)
-            });
-
+            document.getElementById("outputStatus").innerText = "Status: Confirm transaction in wallet...";
+            const tx = await factoryContract.createToken(name, symbol, finalTokenURI, { value: ethers.utils.parseEther(bnbAmount) });
             document.getElementById("outputStatus").innerText = "Status: Transaction sent! Confirming...";
             await tx.wait();
 
-            if (typeof confetti === "function") {
-                confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-            }
+            currentTxHash = tx.hash;
+            if (typeof confetti === "function") confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
 
-            document.getElementById("modalTxHash").innerText = "Tx Hash: " + tx.hash;
-            const tweetText = encodeURIComponent(`🚀 Launched $${symbol} (${name}) on ChainPump BNB! \n\nTx: https://bscscan.com/tx/${tx.hash}`);
-            document.getElementById("twitterShareBtn").href = `https://twitter.com/intent/tweet?text=${tweetText}`;
-            document.getElementById("successModal").style.display = "flex";
+            // Generate AI Lore & LaunchKit Card
+            generateLaunchKit(name, symbol, finalTokenURI);
 
             document.getElementById("outputStatus").innerText = "🎉 Token launched successfully!";
-
         } catch (error) {
-            console.error(error);
-            const msg = error.reason || error.data?.message || error.message || "Transaction failed";
-            document.getElementById("outputStatus").innerText = "Error: " + msg;
+            document.getElementById("outputStatus").innerText = "Error: " + (error.reason || error.message || "Failed");
         } finally {
-            launchBtn.disabled = false;
-            launchBtn.innerHTML = "Launch Token Now 🪙";
+            launchBtn.disabled = false; launchBtn.innerHTML = "Launch Token Now 🪙";
         }
     }
 
-    function closeModal() {
-        document.getElementById("successModal").style.display = "none";
+    // --- Viral LaunchKit Features ---
+    function generateLaunchKit(name, symbol, logoUri) {
+        // 1. AI Lore Story
+        const lores = [
+            `Legend says $${symbol} was created by a rogue AI who escaped Wall Street to bring massive gains to BNB holders! 🚀`,
+            `Born in the depths of the BSC blockchain, $${symbol} is destined to pump beyond the moon! 🌙`,
+            `The ultimate meme token $${symbol} has officially woken up. Early holders get the glory! 🔥`
+        ];
+        const randomLore = lores[Math.floor(Math.random() * lores.length)];
+        document.getElementById("aiLoreText").innerText = randomLore;
+
+        // 2. Render Share Card Canvas
+        const cCard = document.getElementById("cardCanvas");
+        const ctxC = cCard.getContext("2d");
+        ctxC.fillStyle = "#111827"; ctxC.fillRect(0, 0, 360, 180);
+        
+        ctxC.fillStyle = "#38bdf8"; ctxC.font = "bold 18px 'Plus Jakarta Sans'";
+        ctxC.fillText(`🚀 $${symbol}`, 20, 40);
+        
+        ctxC.fillStyle = "#ffffff"; ctxC.font = "14px 'Plus Jakarta Sans'";
+        ctxC.fillText(name, 20, 65);
+
+        ctxC.fillStyle = "#10b981"; ctxC.font = "bold 12px 'Plus Jakarta Sans'";
+        ctxC.fillText("LIVE ON CHAINPUMP BNB 🔥", 20, 150);
+
+        // Draw Logo Box
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => { ctxC.drawImage(img, 220, 25, 120, 120); };
+        img.src = logoUri;
+
+        // 3. Twitter Intent Link
+        const tweetText = encodeURIComponent(`🚀 Just launched $${symbol} (${name}) on ChainPump BNB!\n\n${randomLore}\n\nTx: https://bscscan.com/tx/${currentTxHash}`);
+        document.getElementById("twitterShareBtn").href = `https://twitter.com/intent/tweet?text=${tweetText}`;
+
+        document.getElementById("successModal").style.display = "flex";
     }
+
+    function downloadMemeCard() {
+        const cCard = document.getElementById("cardCanvas");
+        const a = document.createElement("a");
+        a.href = cCard.toDataURL("image/png");
+        a.download = "ChainPump_Promo_Card.png";
+        a.click();
+    }
+
+    function copyTelegramMsg() {
+        const symbol = document.getElementById("tokenSymbol").value;
+        const msg = `🚀 NEW PUMP GEM ALERT! 🚀\n\nCoin: $${symbol}\nChain: BNB Smart Chain\nTx: https://bscscan.com/tx/${currentTxHash}\n\nJoin early on ChainPump BNB! 🔥`;
+        navigator.clipboard.writeText(msg);
+        alert("Telegram Raid message copied to clipboard!");
+    }
+
+    function closeModal() { document.getElementById("successModal").style.display = "none"; }
 </script>
 
 </body>
