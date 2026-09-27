@@ -1,9 +1,9 @@
-تط<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة إطلاق العملات - Viral Meme Factory</title>
+    <title>ChainPump BNB 🚀</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <style>
         body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
@@ -19,28 +19,28 @@
 <body>
 
 <div class="container">
-    <h2>🚀 مصنع العملات الفيروسية</h2>
-    <button class="btn" onclick="connectWallet()">ربط المحفظة (Connect Wallet)</button>
+    <h2>⚡ ChainPump BNB 🔥</h2>
+    <button class="btn" onclick="connectWallet()">Connect Wallet</button>
     <p id="walletAddress" style="font-size: 12px; color: #38bdf8; text-align: center; margin-top: 8px;"></p>
 
     <hr style="border-color: #334155; margin: 20px 0;">
 
-    <h3>إطلاق عملة جديدة أو الشراء التجريبي</h3>
-    <label>اسم العملة (Name):</label>
-    <input type="text" id="tokenName" value="Smart Money Illusion">
+    <h3>Launch Token & Initial Buy</h3>
+    <label>Token Name:</label>
+    <input type="text" id="tokenName" value="ChainPump Gem">
     
-    <label>رمز العملة (Symbol):</label>
-    <input type="text" id="tokenSymbol" value="SMG">
+    <label>Token Symbol:</label>
+    <input type="text" id="tokenSymbol" value="CPUMP">
     
-    <label>رابط البيانات (Token URI):</label>
+    <label>Token URI:</label>
     <input type="text" id="tokenUri" value="https://bafybeigdyrzt5fptudm7hu...">
 
-    <label>مبلغ الشراء التجريبي (BNB):</label>
-    <input type="text" id="buyAmount" value="0.001">
+    <label>Initial Launch Amount (BNB): [Min: 0.01]</label>
+    <input type="text" id="buyAmount" value="0.01">
 
-    <button class="btn" onclick="createToken()" style="background: #16a34a;">إطلاق العملة وتأكيد الشراء 🪙</button>
+    <button class="btn" onclick="createToken()" style="background: #16a34a;">Launch Token Now 🪙</button>
 
-    <div class="output" id="outputStatus">الحالة: بانتظار ربط المحفظة...</div>
+    <div class="output" id="outputStatus">Status: Waiting for wallet connection...</div>
 </div>
 
 <script>
@@ -61,28 +61,28 @@
                 
                 const network = await provider.getNetwork();
                 if (network.chainId !== 56) {
-                    alert("الرجاء التحويل إلى شبكة BNB Smart Chain الرئيسية في محفظتك!");
+                    alert("Please switch to BNB Smart Chain Mainnet in your wallet!");
                     return;
                 }
 
                 signer = provider.getSigner();
                 const address = await signer.getAddress();
-                document.getElementById("walletAddress").innerText = "متصل: " + address;
+                document.getElementById("walletAddress").innerText = "Connected: " + address;
                 
                 factoryContract = new ethers.Contract(contractAddress, contractABI, signer);
-                document.getElementById("outputStatus").innerText = "تم ربط المحفظة بنجاح وجاهز للإطلاق!";
+                document.getElementById("outputStatus").innerText = "Wallet connected successfully. Ready to launch!";
             } catch (error) {
                 console.error(error);
-                alert("فشل ربط المحفظة!");
+                alert("Failed to connect wallet!");
             }
         } else {
-            alert("الرجاء فتح الصفحة من متصفح يدعم المحافظ مثل MetaMask أو Mises Browser!");
+            alert("Please open this page from a Web3 browser like MetaMask or Mises Browser!");
         }
     }
 
     async function createToken() {
         if (!factoryContract) {
-            alert("الرجاء ربط المحفظة أولاً!");
+            alert("Please connect your wallet first!");
             return;
         }
 
@@ -91,23 +91,28 @@
         const uri = document.getElementById("tokenUri").value;
         const bnbAmount = document.getElementById("buyAmount").value;
 
+        // التحقق من أن المبلغ المدخل لا يقل عن 0.01 BNB
+        if (parseFloat(bnbAmount) < 0.01) {
+            alert("Minimum launch amount is 0.01 BNB!");
+            return;
+        }
+
         try {
-            document.getElementById("outputStatus").innerText = "جاري إرسال المعاملة لإطلاق العملة...";
+            document.getElementById("outputStatus").innerText = "Sending transaction to launch token...";
             
-            // تحويل قيمة الـ BNB إلى Wei وإرسالها مع المعاملة كقيمة (value)
             const tx = await factoryContract.createToken(name, symbol, uri, {
                 value: ethers.utils.parseEther(bnbAmount)
             });
             
-            document.getElementById("outputStatus").innerText = "تم الإرسال، بانتظار التأكيد على الشبكة... Tx: " + tx.hash;
+            document.getElementById("outputStatus").innerText = "Transaction sent, waiting for confirmation... Tx: " + tx.hash;
             
             await tx.wait();
-            document.getElementById("outputStatus").innerText = "🎉 تمت عملية الإطلاق والشراء بنجاح تام!";
-            alert("مبروك! تم إطلاق العملة بنجاح.");
+            document.getElementById("outputStatus").innerText = "🎉 Token launched and bought successfully!";
+            alert("Congratulations! Token launched successfully.");
         } catch (error) {
             console.error(error);
-            document.getElementById("outputStatus").innerText = "خطأ أثناء التنفيذ: " + (error.message || error);
-            alert("حدث خطأ أثناء إطلاق العملة، تأكد من رصيد الغاز.");
+            document.getElementById("outputStatus").innerText = "Execution error: " + (error.message || error);
+            alert("An error occurred during token launch. Check your gas balance.");
         }
     }
 </script>
