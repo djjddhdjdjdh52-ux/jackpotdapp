@@ -369,9 +369,16 @@
             <!-- Tab 2: Trade -->
             <div id="tradeTab" class="tab-content" style="display: none;">
                 <h4 style="margin-top: 0; color: var(--binance-yellow);">منحنى السعر والسيولة (Bonding Curve)</h4>
-                <p style="color: var(--text-muted); font-size: 12px; line-height: 1.6; text-align: right; direction: rtl;">
-                    أي عملة جديدة تبدأ رحلتها على منحنى السعر التدريجي. أول ما السيولة توصل <b>5 BNB</b>، تصير لحظة <b>"التخرج"</b>: النظام يسحب السيولة تلقائياً وينقلها إلى <b>PancakeSwap</b> مع قفل الأبد للأمان التام!
-                </p>
+                
+                <!-- التحديث الجديد للشرح -->
+                <div style="background: var(--bg-input); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 15px; text-align: right; direction: rtl; font-size: 13px; line-height: 1.6;">
+                    <ul style="margin: 0; padding-right: 18px; color: var(--text-muted);">
+                        <li><strong style="color: var(--text-primary);">الانطلاق التدريجي:</strong> تبدأ كل عملة جديدة رحلتها عبر منحنى تسعير تدريجي يعكس حجم التفاعل والطلب.</li>
+                        <li><strong style="color: var(--text-primary);">لحظة التخرج:</strong> بمجرد وصول إجمالي السيولة إلى حد <span style="color: var(--binance-yellow); font-weight: bold;">5 BNB</span>، يتم إطلاق "مرحلة التخرج" آلياً دون تدخل يدوي.</li>
+                        <li><strong style="color: var(--text-primary);">الأمان والسيولة:</strong> يسحب النظام السيولة المتراكمة وينقلها مباشرة إلى <strong style="color: var(--text-primary);">PancakeSwap</strong> مع قفل السيولة للأبد لضمان أقصى درجات الأمان للمستثمرين.</li>
+                    </ul>
+                </div>
+
                 <div style="background: var(--bg-input); height: 20px; border-radius: 4px; overflow: hidden; margin-bottom: 15px;">
                     <div style="background: var(--green-bull); width: 45%; height: 100%; text-align: center; font-size: 11px; line-height: 20px; color: #000; font-weight: bold;">45% (4.5 / 5 BNB للوصول للتخرج)</div>
                 </div>
@@ -565,7 +572,6 @@
                     isConnected = true;
                     document.getElementById("walletBtn").innerText = addr.substring(0,6) + "..." + addr.substring(38);
                     
-                    // رابط إحالة قصير ونظيف
                     const cleanBaseUrl = window.location.origin + window.location.pathname;
                     document.getElementById("refLink").value = `${cleanBaseUrl}?ref=${addr}`;
                     
