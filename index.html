@@ -1,247 +1,116 @@
-<!DOCTYPE html>
+تط<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Jackpot Protocol DApp</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Ethers.js v5 CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" type="text/javascript"></script>
+    <title>منصة إطلاق العملات - Viral Meme Factory</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
+        .container { max-width: 500px; margin: auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #38bdf8; }
+        .btn { width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        .btn:hover { background: #0369a1; }
+        input { width: 100%; padding: 10px; margin: 8px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
+        label { font-size: 14px; color: #94a3b8; }
+        .output { background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 15px; font-size: 13px; word-break: break-all; border: 1px solid #334155; }
+    </style>
 </head>
-<body class="bg-slate-900 text-white font-sans min-h-screen pb-12">
+<body>
 
-    <!-- Header / Navbar -->
-    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center font-bold text-black text-xl">🚀</div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">Ultimate Jackpot</h1>
-            </div>
-            <button id="connectBtn" onclick="connectWallet()" class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl shadow-lg transition duration-200">
-                ربط المحفظة
-            </button>
-        </div>
-    </header>
+<div class="container">
+    <h2>🚀 مصنع العملات الفيروسية</h2>
+    <button class="btn" onclick="connectWallet()">ربط المحفظة (Connect Wallet)</button>
+    <p id="walletAddress" style="font-size: 12px; color: #38bdf8; text-align: center; margin-top: 8px;"></p>
 
-    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-6">
+    <hr style="border-color: #334155; margin: 20px 0;">
 
-        <!-- Progress to Graduation -->
-        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-xl">
-            <div class="flex justify-between items-center mb-3">
-                <span class="font-bold text-slate-300">التقدم نحو الإدراج على PancakeSwap (Graduation):</span>
-                <span id="graduationProgressText" class="font-bold text-yellow-400">0 / 20 BNB</span>
-            </div>
-            <div class="w-full bg-slate-900 rounded-full h-4 overflow-hidden p-0.5 border border-slate-700">
-                <div id="graduationProgressBar" class="bg-gradient-to-r from-yellow-500 to-amber-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-            <p class="text-xs text-slate-400 mt-2">عند وصول الجمع إلى 20 BNB يتم إغلاق البيع المباشر وقفل السيولة نهائياً على منصة PancakeSwap تلقائياً.</p>
-        </div>
+    <h3>إطلاق عملة جديدة أو الشراء التجريبي</h3>
+    <label>اسم العملة (Name):</label>
+    <input type="text" id="tokenName" value="Smart Money Illusion">
+    
+    <label>رمز العملة (Symbol):</label>
+    <input type="text" id="tokenSymbol" value="SMG">
+    
+    <label>رابط البيانات (Token URI):</label>
+    <input type="text" id="tokenUri" value="https://bafybeigdyrzt5fptudm7hu...">
 
-        <!-- Metrics Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Jackpot Pool -->
-            <div class="bg-gradient-to-br from-amber-950/40 to-slate-800 border border-amber-500/30 rounded-2xl p-6 shadow-xl">
-                <div class="text-slate-400 text-sm font-semibold mb-1">🎯 حوض الجائزة الكبرى (Jackpot Pool)</div>
-                <div id="jackpotAmount" class="text-3xl font-black text-yellow-400 my-2">0.00 BNB</div>
-                <div class="text-xs text-slate-400">توزع لأفضل 10 المترشحين عند وصول هدف السيولة.</div>
-            </div>
+    <label>مبلغ الشراء التجريبي (BNB):</label>
+    <input type="text" id="buyAmount" value="0.001">
 
-            <!-- Time Bomb King -->
-            <div class="bg-gradient-to-br from-red-950/40 to-slate-800 border border-red-500/30 rounded-2xl p-6 shadow-xl">
-                <div class="text-slate-400 text-sm font-semibold mb-1">💣 ملك القنبلة الموقوتة (Time Bomb)</div>
-                <div id="timeBombKing" class="text-sm font-mono bg-slate-900 p-2 rounded-lg text-amber-300 truncate my-2">لا يوجد حتى الآن</div>
-                <div class="text-xs text-slate-400">آخر مشترٍ يحصل على 20% من الجائزة إذا لم يشترِ أحد لمدة 15 دقيقة.</div>
-            </div>
-        </div>
+    <button class="btn" onclick="createToken()" style="background: #16a34a;">إطلاق العملة وتأكيد الشراء 🪙</button>
 
-        <!-- Trade Section -->
-        <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-xl">
-            <!-- Tabs -->
-            <div class="flex space-x-2 space-x-reverse border-b border-slate-700 pb-4 mb-6">
-                <button id="buyTabBtn" onclick="switchTab('buy')" class="flex-1 py-2.5 rounded-xl font-bold bg-yellow-500 text-slate-950 transition">شراء العملة</button>
-                <button id="sellTabBtn" onclick="switchTab('sell')" class="flex-1 py-2.5 rounded-xl font-bold bg-slate-700 text-slate-300 hover:bg-slate-600 transition">بيع العملة</button>
-            </div>
+    <div class="output" id="outputStatus">الحالة: بانتظار ربط المحفظة...</div>
+</div>
 
-            <!-- Buy Form -->
-            <div id="buyForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm text-slate-300 mb-2 font-semibold">مبلغ الشراء (BNB):</label>
-                    <input type="number" id="buyAmount" step="0.01" placeholder="0.1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 transition">
-                </div>
-                <div>
-                    <label class="block text-sm text-slate-300 mb-2 font-semibold">عنوان المحيل (اختياري):</label>
-                    <input type="text" id="referrerAddress" placeholder="0x..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 transition">
-                </div>
-                <button onclick="executeBuy()" class="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition">تأكيد الشراء 🚀</button>
-            </div>
+<script>
+    const contractAddress = "0xb2C90c312201d312687D3063f60deB1216173DBc";
+    const contractABI = [
+        "function createToken(string memory name, string memory symbol, string memory tokenURI) public payable returns (address)",
+        "function getTokensCount() public view returns (uint256)"
+    ];
 
-            <!-- Sell Form -->
-            <div id="sellForm" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-sm text-slate-300 mb-2 font-semibold">عدد العملات للبيع:</label>
-                    <input type="number" id="sellAmount" placeholder="1000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 transition">
-                </div>
-                <button onclick="executeSell()" class="w-full bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition">تأكيد البيع 📉</button>
-            </div>
-        </div>
+    let signer;
+    let factoryContract;
 
-        <!-- Dead Token Burner (Bonus) -->
-        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6">
-            <h3 class="text-lg font-bold text-slate-200 mb-2">🔥 محرقة العملات الميتة (Dead Token Burner)</h3>
-            <p class="text-xs text-slate-400 mb-4">احرق أي عملة ميتة لديك مقابل رسوم 0.002 BNB تدخل حصرياً في حوض الـ Jackpot وتكسب تذكرة ذهبية!</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                <input type="text" id="deadTokenAddr" placeholder="عنوان العملة الميتة (0x...)" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm">
-                <input type="number" id="deadTokenAmount" placeholder="الكمية المراد حرقها" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm">
-            </div>
-            <button onclick="executeBurnDeadToken()" class="w-full bg-slate-700 hover:bg-slate-600 text-amber-400 font-bold py-2.5 rounded-xl text-sm transition">حرق العملة وكسب الجائزة 🔥</button>
-        </div>
-
-    </main>
-
-    <script>
-        const CONTRACT_ADDRESS = "0xA493C90CaACeC4639C6e6fb1928F49c55ea854EC"; 
-
-        const CONTRACT_ABI = [
-            "function buyTokens(uint256 minTokensOut, address referrer) external payable",
-            "function sellTokens(uint256 tokenAmount, uint256 minBnbOut) external",
-            "function burnDeadToken(address deadTokenAddress, uint256 amount) external payable",
-            "function realBnbInvested() view returns (uint256)",
-            "function jackpotPool() view returns (uint256)",
-            "function currentTimeBombKing() view returns (address)",
-            "function balanceOf(address account) view returns (uint256)",
-            "function decimals() view returns (uint8)"
-        ];
-
-        let provider, signer, contract, userAddress;
-
-        async function connectWallet() {
-            if (window.ethereum) {
-                try {
-                    provider = new ethers.providers.Web3Provider(window.ethereum);
-                    await provider.send("eth_requestAccounts", []);
-                    
-                    const network = await provider.getNetwork();
-                    if(network.chainId !== 56 && network.chainId !== 0x38) {
-                        alert("يرجى التحويل إلى شبكة BNB Smart Chain في محفظتك.");
-                    }
-
-                    signer = provider.getSigner();
-                    userAddress = await signer.getAddress();
-                    
-                    document.getElementById("connectBtn").innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(userAddress.length - 4);
-                    
-                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                    fetchMetrics();
-                } catch (error) {
-                    console.error(error);
-                    alert("فشل الربط بالمحفظة!");
+    async function connectWallet() {
+        if (window.ethereum) {
+            try {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                
+                const network = await provider.getNetwork();
+                if (network.chainId !== 56) {
+                    alert("الرجاء التحويل إلى شبكة BNB Smart Chain الرئيسية في محفظتك!");
+                    return;
                 }
-            } else {
-                alert("يرجى فتح الصفحة من داخل متصفح المحفظة (مثل Trust Wallet أو MetaMask).");
+
+                signer = provider.getSigner();
+                const address = await signer.getAddress();
+                document.getElementById("walletAddress").innerText = "متصل: " + address;
+                
+                factoryContract = new ethers.Contract(contractAddress, contractABI, signer);
+                document.getElementById("outputStatus").innerText = "تم ربط المحفظة بنجاح وجاهز للإطلاق!";
+            } catch (error) {
+                console.error(error);
+                alert("فشل ربط المحفظة!");
             }
+        } else {
+            alert("الرجاء فتح الصفحة من متصفح يدعم المحافظ مثل MetaMask أو Mises Browser!");
+        }
+    }
+
+    async function createToken() {
+        if (!factoryContract) {
+            alert("الرجاء ربط المحفظة أولاً!");
+            return;
         }
 
-        async function fetchMetrics() {
-            if (!contract) return;
-            try {
-                const realBnb = await contract.realBnbInvested();
-                const jackpot = await contract.jackpotPool();
-                const king = await contract.currentTimeBombKing();
+        const name = document.getElementById("tokenName").value;
+        const symbol = document.getElementById("tokenSymbol").value;
+        const uri = document.getElementById("tokenUri").value;
+        const bnbAmount = document.getElementById("buyAmount").value;
 
-                const bnbEth = parseFloat(ethers.utils.formatEther(realBnb));
-                const jackpotEth = parseFloat(ethers.utils.formatEther(jackpot));
-
-                document.getElementById("graduationProgressText").innerText = `${bnbEth.toFixed(2)} / 20 BNB`;
-                const pct = Math.min((bnbEth / 20) * 100, 100);
-                document.getElementById("graduationProgressBar").style.width = `${pct}%`;
-
-                document.getElementById("jackpotAmount").innerText = `${jackpotEth.toFixed(4)} BNB`;
-                document.getElementById("timeBombKing").innerText = king === "0x0000000000000000000000000000000000000000" ? "لا يوجد حتى الآن" : king;
-            } catch (e) {
-                console.error(e);
-            }
+        try {
+            document.getElementById("outputStatus").innerText = "جاري إرسال المعاملة لإطلاق العملة...";
+            
+            // تحويل قيمة الـ BNB إلى Wei وإرسالها مع المعاملة كقيمة (value)
+            const tx = await factoryContract.createToken(name, symbol, uri, {
+                value: ethers.utils.parseEther(bnbAmount)
+            });
+            
+            document.getElementById("outputStatus").innerText = "تم الإرسال، بانتظار التأكيد على الشبكة... Tx: " + tx.hash;
+            
+            await tx.wait();
+            document.getElementById("outputStatus").innerText = "🎉 تمت عملية الإطلاق والشراء بنجاح تام!";
+            alert("مبروك! تم إطلاق العملة بنجاح.");
+        } catch (error) {
+            console.error(error);
+            document.getElementById("outputStatus").innerText = "خطأ أثناء التنفيذ: " + (error.message || error);
+            alert("حدث خطأ أثناء إطلاق العملة، تأكد من رصيد الغاز.");
         }
+    }
+</script>
 
-        function switchTab(tab) {
-            const buyForm = document.getElementById("buyForm");
-            const sellForm = document.getElementById("sellForm");
-            const buyBtn = document.getElementById("buyTabBtn");
-            const sellBtn = document.getElementById("sellTabBtn");
-
-            if(tab === 'buy') {
-                buyForm.classList.remove("hidden");
-                sellForm.classList.add("hidden");
-                buyBtn.className = "flex-1 py-2.5 rounded-xl font-bold bg-yellow-500 text-slate-950 transition";
-                sellBtn.className = "flex-1 py-2.5 rounded-xl font-bold bg-slate-700 text-slate-300 hover:bg-slate-600 transition";
-            } else {
-                buyForm.classList.add("hidden");
-                sellForm.classList.remove("hidden");
-                sellBtn.className = "flex-1 py-2.5 rounded-xl font-bold bg-yellow-500 text-slate-950 transition";
-                buyBtn.className = "flex-1 py-2.5 rounded-xl font-bold bg-slate-700 text-slate-300 hover:bg-slate-600 transition";
-            }
-        }
-
-        async function executeBuy() {
-            if(!contract) return alert("يرجى ربط المحفظة أولاً!");
-            const amount = document.getElementById("buyAmount").value;
-            let ref = document.getElementById("referrerAddress").value;
-            if(!amount || amount <= 0) return alert("أدخل مبلغ BNB صحيح");
-            if(!ethers.utils.isAddress(ref)) ref = "0x0000000000000000000000000000000000000000";
-
-            try {
-                const tx = await contract.buyTokens(0, ref, {
-                    value: ethers.utils.parseEther(amount)
-                });
-                alert("تم إرسال معاملة الشراء! انتظر التأكيد...");
-                await tx.wait();
-                alert("تم الشراء بنجاح! 🎉");
-                fetchMetrics();
-            } catch (err) {
-                console.error(err);
-                alert("فشلت عملية الشراء!");
-            }
-        }
-
-        async function executeSell() {
-            if(!contract) return alert("يرجى ربط المحفظة أولاً!");
-            const amount = document.getElementById("sellAmount").value;
-            if(!amount || amount <= 0) return alert("أدخل كمية عملات صحيحة");
-
-            try {
-                const tokenDecimals = await contract.decimals();
-                const parsedAmount = ethers.utils.parseUnits(amount, tokenDecimals);
-                const tx = await contract.sellTokens(parsedAmount, 0);
-                alert("تم إرسال معاملة البيع! انتظر التأكيد...");
-                await tx.wait();
-                alert("تم البيع بنجاح!");
-                fetchMetrics();
-            } catch (err) {
-                console.error(err);
-                alert("فشلت عملية البيع!");
-            }
-        }
-
-        async function executeBurnDeadToken() {
-            if(!contract) return alert("يرجى ربط المحفظة أولاً!");
-            const deadAddr = document.getElementById("deadTokenAddr").value;
-            const amount = document.getElementById("deadTokenAmount").value;
-
-            if(!ethers.utils.isAddress(deadAddr) || !amount) return alert("أدخل بيانات صحيحة");
-
-            try {
-                const tx = await contract.burnDeadToken(deadAddr, ethers.utils.parseEther(amount), {
-                    value: ethers.utils.parseEther("0.002")
-                });
-                alert("جاري حرق العملة الميتة...");
-                await tx.wait();
-                alert("تم الحرق واكتساب التذكرة بنجاح! 🔥");
-                fetchMetrics();
-            } catch (err) {
-                console.error(err);
-                alert("فشلت عملية الحرق!");
-            }
-        }
-    </script>
 </body>
 </html>
