@@ -3,495 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChainPump BNB 🚀 | Meme Launchpad</title>
-    <!-- Ethers.js v5 -->
+    <title>ChainPump BNB 🚀 | The Ultimate Jackpot</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
-            --accent-green: #10b981;
-            --accent-blue: #38bdf8;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --border-color: #1f2937;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 15px;
-            background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15), transparent 50%);
-        }
-
-        .app-container {
-            width: 100%; max-width: 480px; background: var(--card-bg);
-            border: 1px solid var(--border-color); border-radius: 20px;
-            padding: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-        }
-
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 {
-            font-size: 26px; font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-
-        .btn-wallet {
-            width: 100%; background: linear-gradient(135deg, #0284c7, #0369a1);
-            color: white; border: none; padding: 14px; border-radius: 12px;
-            font-size: 15px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-
-        .wallet-status { font-size: 12px; color: var(--accent-blue); text-align: center; margin-top: 8px; font-weight: 600; word-break: break-all; }
-        .divider { height: 1px; background: var(--border-color); margin: 20px 0; }
-        .form-group { margin-bottom: 16px; }
-
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        input[type="text"], input[type="number"] {
-            width: 100%; padding: 12px 14px; background: #0b0f19;
-            border: 1px solid var(--border-color); color: white;
-            border-radius: 10px; font-size: 14px; outline: none;
-        }
-
-        .art-mode-selector { display: flex; gap: 8px; margin-bottom: 12px; }
-        .mode-btn {
-            flex: 1; padding: 10px 4px; background: #0b0f19;
-            border: 1px solid var(--border-color); color: var(--text-muted);
-            border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center;
-        }
-        .mode-btn.active { background: rgba(56, 189, 248, 0.1); border-color: var(--accent-blue); color: var(--accent-blue); }
-
-        .sketch-box { background: #0b0f19; border: 1px dashed var(--border-color); border-radius: 12px; padding: 12px; text-align: center; }
-        canvas { background: #ffffff; border-radius: 8px; cursor: crosshair; touch-action: none; max-width: 100%; }
-
-        .tools { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
-        .btn-clear { background: #ef4444; color: white; }
-        .btn-action { background: linear-gradient(135deg, var(--accent-purple), #6d28d9); color: white; width: 100%; padding: 10px; margin-top: 8px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
-
-        /* Genius Boosters Collapsible Section */
-        .booster-toggle {
-            background: #1f2937; color: var(--accent-blue); border: none;
-            width: 100%; padding: 10px; border-radius: 8px; font-size: 12px;
-            font-weight: bold; cursor: pointer; display: flex;
-            justify-content: space-between; align-items: center; margin-top: 15px;
-        }
-
-        .booster-box {
-            display: none; background: #0b0f19; border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 12px; margin-top: 8px;
-        }
-
-        .switch-row {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-        }
-        .switch-row:last-child { margin-bottom: 0; }
-        .switch-title { font-size: 12px; font-weight: bold; color: var(--text-main); }
-        .switch-desc { font-size: 10px; color: var(--text-muted); }
-
-        /* Toggle Switch UI */
-        .switch { position: relative; display: inline-block; width: 38px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #374151; transition: .3s; border-radius: 20px;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
-            background-color: white; transition: .3s; border-radius: 50%;
-        }
-        input:checked + .slider { background-color: var(--accent-green); }
-        input:checked + .slider:before { transform: translateX(18px); }
-
-        .btn-launch {
-            width: 100%; background: linear-gradient(135deg, #10b981, #059669);
-            color: white; border: none; padding: 16px; border-radius: 12px;
-            font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 15px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-        .btn-launch:disabled { background: #374151; cursor: not-allowed; box-shadow: none; }
-
-        .status-card { background: #0b0f19; border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; font-size: 12px; color: var(--text-muted); margin-top: 15px; text-align: center; word-break: break-all; }
-
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--accent-green); padding: 20px; border-radius: 20px; text-align: center; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
+        .container { max-width: 500px; margin: auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         
-        .btn-twitter { background: #1da1f2; color: white; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 8px; font-size: 13px; width: 100%; }
-        .btn-copy { background: #374151; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 11px; cursor: pointer; width: 100%; margin-top: 6px; }
+        /* --- تنسيقات الجائزة الكبرى (Jackpot) --- */
+        .jackpot-box { background: linear-gradient(135deg, #b45309, #ea580c); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 2px solid #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); animation: pulse-glow 2s infinite; }
+        .jackpot-title { font-size: 14px; font-weight: bold; color: #fef3c7; text-transform: uppercase; }
+        .jackpot-amount { font-size: 32px; font-weight: bold; color: #fff; margin: 5px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .countdown { font-size: 18px; color: #fde047; font-weight: bold; font-family: monospace; }
+        .last-buyer { font-size: 12px; color: #ffedd5; margin-top: 5px; }
+        
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); } 50% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.8); } 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); } }
+
+        /* --- باقي التنسيقات --- */
+        .btn { width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: #0369a1; transform: scale(1.02); }
+        .btn-launch { background: #16a34a; font-size: 18px; text-transform: uppercase; }
+        .btn-launch:hover { background: #15803d; }
+        
+        .input-group { position: relative; margin: 8px 0 15px 0; }
+        input[type="text"] { width: 100%; padding: 10px 45px 10px 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
+        label { font-size: 14px; color: #94a3b8; font-weight: bold; }
+        
+        .mic-btn { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; border-radius: 50%; }
+        .mic-btn:hover { background: #334155; }
+        .mic-active { color: #ef4444; }
+
+        .output { background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 15px; font-size: 13px; word-break: break-all; border: 1px solid #334155; color: #fbbf24; text-align: center; }
+        
+        .tab-container { display: flex; gap: 10px; margin-top: 15px; }
+        .tab { flex: 1; text-align: center; padding: 8px; background: #334155; cursor: pointer; border-radius: 6px 6px 0 0; font-size: 13px; font-weight: bold; }
+        .tab.active { background: #0f172a; color: #38bdf8; border: 1px solid #38bdf8; border-bottom: none; }
+        .tab-content { background: #0f172a; padding: 15px; border: 1px solid #38bdf8; border-radius: 0 0 6px 6px; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <h1>⚡ ChainPump BNB 🔥</h1>
-        <p>Instant Memecoin Launchpad + Anti-Bot Shield</p>
+<div class="container">
+    <h2>⚡ ChainPump BNB 🔥</h2>
+    <p id="walletAddress" style="font-size: 12px; color: #38bdf8; text-align: center; margin-top: 0;">Not Connected</p>
+
+    <!-- 🏆 قسم الجائزة الكبرى (Jackpot Section) -->
+    <div class="jackpot-box">
+        <div class="jackpot-title">🏆 Current Grand Jackpot</div>
+        <div class="jackpot-amount" id="jackpotPool">-- BNB</div>
+        <div class="countdown">⏳ Timer: <span id="timerDisplay">00:00:00</span></div>
+        <div class="last-buyer" id="lastBuyerDisplay">Last Action By: Waiting...</div>
     </div>
 
-    <button class="btn-wallet" id="walletBtn" onclick="connectWallet()">
-        <i class="fa-solid fa-wallet"></i> Connect Wallet
-    </button>
-    <div class="wallet-status" id="walletAddress">Wallet not connected</div>
+    <button class="btn" onclick="connectWallet()">🔗 Connect Wallet</button>
 
-    <div class="divider"></div>
+    <hr style="border-color: #334155; margin: 20px 0;">
 
-    <div class="form-group">
-        <label><i class="fa-solid fa-tag"></i> Token Name</label>
-        <input type="text" id="tokenName" value="ChainPump Gem">
+    <label>Token Name:</label>
+    <div class="input-group">
+        <input type="text" id="tokenName" placeholder="e.g. Pepe Killer">
+        <button class="mic-btn" onclick="startVoiceInput('tokenName', this)">🎤</button>
+    </div>
+    
+    <label>Token Symbol:</label>
+    <div class="input-group">
+        <input type="text" id="tokenSymbol" placeholder="e.g. PEPEK">
+        <button class="mic-btn" onclick="startVoiceInput('tokenSymbol', this)">🎤</button>
     </div>
 
-    <div class="form-group">
-        <label><i class="fa-solid fa-coins"></i> Token Symbol</label>
-        <input type="text" id="tokenSymbol" value="CPUMP">
+    <label>🎨 Token Logo (Doodle Style):</label>
+    <div class="tab-container">
+        <div class="tab active" onclick="switchTab('ai')">🤖 Prompt</div>
+        <div class="tab" onclick="switchTab('draw')">🖍️ Draw</div>
     </div>
-
-    <label><i class="fa-solid fa-image"></i> Token Logo Source</label>
-    <div class="art-mode-selector">
-        <button class="mode-btn active" id="btnModeDoodle" onclick="switchArtMode('doodle')">🎨 Doodle</button>
-        <button class="mode-btn" id="btnModeAI" onclick="switchArtMode('ai')">🪄 AI Art</button>
-        <button class="mode-btn" id="btnModeUpload" onclick="switchArtMode('upload')">📁 Upload</button>
-    </div>
-
-    <div class="sketch-box" id="doodleSection">
-        <canvas id="sketchpad" width="260" height="180"></canvas>
-        <div class="tools">
-            <input type="color" id="colorPicker" value="#000000" style="border:none; background:transparent; cursor:pointer;">
-            <button class="btn-sm btn-clear" onclick="clearCanvas()"><i class="fa-solid fa-trash"></i> Clear</button>
+    
+    <div class="tab-content" id="aiTab">
+        <div class="input-group" style="margin-bottom: 0;">
+            <input type="text" id="aiPrompt" placeholder="Describe to generate doodle...">
+            <button class="mic-btn" onclick="startVoiceInput('aiPrompt', this)">🎤</button>
         </div>
     </div>
-
-    <div class="sketch-box" id="aiSection" style="display: none;">
-        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Auto-creates a unique logo based on your token name!</p>
-        <div id="aiPreview" style="height: 140px; background: #1f2937; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 8px;">
-            <span style="font-size: 12px; color: #6b7280;">Click below to generate</span>
-        </div>
-        <button class="btn-action" onclick="generateAIArt()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Logo Now</button>
+    
+    <div class="tab-content" id="drawTab" style="display: none;">
+        <canvas id="sketchpad" width="280" height="150" style="background: white; width: 100%; border-radius: 6px; cursor: crosshair; touch-action: none;"></canvas>
     </div>
 
-    <div class="sketch-box" id="uploadSection" style="display: none;">
-        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Select a logo from your device</p>
-        <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" style="display: none;">
-        <button class="btn-action" style="background: #0284c7;" onclick="document.getElementById('imageInput').click()">
-            <i class="fa-solid fa-upload"></i> Choose Image File
-        </button>
-        <div id="uploadPreview" style="margin-top: 10px; height: 130px; display: none; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; border: 1px solid var(--border-color);">
-            <img id="previewImg" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
+    <label style="display: block; margin-top: 15px;">Initial Launch Amount (BNB): [Min: 0.01]</label>
+    <div class="input-group">
+        <input type="text" id="buyAmount" value="0.01">
     </div>
 
-    <div class="form-group" style="margin-top: 15px;">
-        <label><i class="fa-solid fa-fire"></i> Initial Buy Amount (BNB) [Min: 0.01]</label>
-        <input type="number" id="buyAmount" value="0.01" step="0.01" min="0.01">
-    </div>
+    <button class="btn btn-launch" onclick="createToken()">🚀 Launch Token Now</button>
 
-    <!-- Genius Boosters Toggle (Accordion) -->
-    <button class="booster-toggle" onclick="toggleBoosters()">
-        <span>⚡ Genius Launch Boosters (Optional)</span>
-        <i class="fa-solid fa-chevron-down" id="boosterIcon"></i>
-    </button>
-
-    <div class="booster-box" id="boosterBox">
-        <div class="switch-row">
-            <div>
-                <div class="switch-title">🛡️ Anti-Snipe Stealth Shield</div>
-                <div class="switch-desc">Hides token from bots for 60s to let real humans buy first</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="antiSnipeToggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="switch-row" style="margin-top: 12px;">
-            <div>
-                <div class="switch-title">🌪️ Chaos Viral Mode</div>
-                <div class="switch-desc">Enables pulsing neon cards + instant multi-tweet raid pack</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="chaosToggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
-
-    <button class="btn-launch" id="launchBtn" onclick="createToken()">Launch Token Now 🪙</button>
-
-    <div class="status-card" id="outputStatus">Status: Ready to connect wallet</div>
-</div>
-
-<!-- Success Modal -->
-<div class="modal" id="successModal">
-    <div class="modal-content">
-        <h2 style="color: var(--accent-green); font-size: 20px;">🎉 Token Live + Boosters Active!</h2>
-        
-        <div style="margin-top: 10px;">
-            <canvas id="cardCanvas" width="360" height="180" style="width:100%; border-radius: 10px; border: 1px solid var(--accent-green);"></canvas>
-            <button class="btn-copy" onclick="downloadMemeCard()"><i class="fa-solid fa-download"></i> Download Banner Card</button>
-        </div>
-
-        <div style="background: #0b0f19; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-top: 12px; text-align: left;">
-            <div style="font-size: 12px; color: var(--accent-blue); font-weight: bold; margin-bottom: 6px;">📖 AI Meme Lore:</div>
-            <div style="font-size: 11px; color: var(--text-muted); font-style: italic;" id="aiLoreText">Loading story...</div>
-        </div>
-
-        <a id="twitterShareBtn" href="#" target="_blank" class="btn-twitter">
-            <i class="fa-brands fa-x-twitter"></i> Launch Twitter Raid Now
-        </a>
-
-        <button class="btn-copy" onclick="copyTelegramMsg()"><i class="fa-solid fa-copy"></i> Copy Telegram Raid Template</button>
-        
-        <button onclick="closeModal()" style="background: transparent; border: none; color: var(--text-muted); margin-top: 12px; cursor: pointer; font-size: 12px;">Close Window</button>
-    </div>
+    <div class="output" id="outputStatus">Status: Ready to pump!</div>
 </div>
 
 <script>
-    const CONTRACT_ADDRESS = "0xb2C90c312201d312687D3063f60deB1216173DBc";
-    const CONTRACT_ABI = [
-        "function createToken(string memory name, string memory symbol, string memory tokenURI) public payable returns (address)",
-        "function getTokensCount() public view returns (uint256)"
-    ];
-    const BSC_CHAIN_ID = "0x38";
+    // --- نظام الجائزة والعداد التنازلي (Jackpot Timer) ---
+    // هذه القيم للتجربة (Mockup) حتى نربطها بدوال العقد الذكي الخاصة بك
+    let countdownTime = 600; // 10 دقائق بالثواني كمثال
+    setInterval(() => {
+        if(countdownTime > 0) countdownTime--;
+        const hours = Math.floor(countdownTime / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((countdownTime % 3600) / 60).toString().padStart(2, '0');
+        const seconds = (countdownTime % 60).toString().padStart(2, '0');
+        document.getElementById("timerDisplay").innerText = `${hours}:${minutes}:${seconds}`;
+        
+        // محاكاة لحجم الجائزة (يمكنك تغييره ليقرأ من العقد مباشرة)
+        document.getElementById("jackpotPool").innerText = (Math.random() * (5.5 - 5.0) + 5.0).toFixed(3) + " BNB";
+    }, 1000);
 
-    let provider, signer, factoryContract;
-    let currentArtMode = 'doodle';
-    let generatedAiImageUrl = '';
-    let uploadedImageUrl = '';
-    let currentTxHash = '';
+    // --- ميزة الإدخال الصوتي ---
+    function startVoiceInput(targetId, btnElement) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) { alert("Voice not supported."); return; }
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.onstart = () => btnElement.classList.add("mic-active");
+        recognition.onspeechend = () => { recognition.stop(); btnElement.classList.remove("mic-active"); };
+        recognition.onresult = (event) => document.getElementById(targetId).value = event.results[0][0].transcript;
+        recognition.start();
+    }
 
+    // --- التبديل بين الرسم والكتابة ---
+    function switchTab(tab) {
+        document.getElementById('aiTab').style.display = tab === 'ai' ? 'block' : 'none';
+        document.getElementById('drawTab').style.display = tab === 'draw' ? 'block' : 'none';
+        document.getElementsByClassName('tab')[0].classList.toggle('active', tab === 'ai');
+        document.getElementsByClassName('tab')[1].classList.toggle('active', tab === 'draw');
+    }
+
+    // --- إعدادات لوحة الرسم ---
     const canvas = document.getElementById("sketchpad");
     const ctx = canvas.getContext("2d");
     let painting = false;
-
-    function initCanvas() { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-    initCanvas();
-
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
     function startPosition(e) { painting = true; draw(e); }
     function endPosition() { painting = false; ctx.beginPath(); }
-    
     function draw(e) {
         if (!painting) return;
         e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        
-        ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.strokeStyle = document.getElementById("colorPicker").value;
-        ctx.lineTo(clientX - rect.left, clientY - rect.top);
-        ctx.stroke(); ctx.beginPath(); ctx.moveTo(clientX - rect.left, clientY - rect.top);
+        ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.strokeStyle = "black";
+        ctx.lineTo(clientX - rect.left, clientY - rect.top); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(clientX - rect.left, clientY - rect.top);
     }
+    canvas.addEventListener("mousedown", startPosition); canvas.addEventListener("mouseup", endPosition);
+    canvas.addEventListener("mousemove", draw); canvas.addEventListener("touchstart", startPosition);
+    canvas.addEventListener("touchend", endPosition); canvas.addEventListener("touchmove", draw);
 
-    canvas.addEventListener("mousedown", startPosition);
-    canvas.addEventListener("mouseup", endPosition);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("touchstart", startPosition);
-    canvas.addEventListener("touchend", endPosition);
-    canvas.addEventListener("touchmove", draw);
-
-    function clearCanvas() { initCanvas(); }
-
-    function switchArtMode(mode) {
-        currentArtMode = mode;
-        document.getElementById("btnModeDoodle").classList.toggle("active", mode === 'doodle');
-        document.getElementById("btnModeAI").classList.toggle("active", mode === 'ai');
-        document.getElementById("btnModeUpload").classList.toggle("active", mode === 'upload');
-
-        document.getElementById("doodleSection").style.display = mode === 'doodle' ? 'block' : 'none';
-        document.getElementById("aiSection").style.display = mode === 'ai' ? 'block' : 'none';
-        document.getElementById("uploadSection").style.display = mode === 'upload' ? 'block' : 'none';
-    }
-
-    function toggleBoosters() {
-        const box = document.getElementById("boosterBox");
-        const icon = document.getElementById("boosterIcon");
-        const isOpen = box.style.display === "block";
-        box.style.display = isOpen ? "none" : "block";
-        icon.className = isOpen ? "fa-solid fa-chevron-down" : "fa-solid fa-chevron-up";
-    }
-
-    async function generateAIArt() {
-        const name = document.getElementById("tokenName").value || "Crypto Gem";
-        const prompt = encodeURIComponent(`cute funny meme mascot logo for crypto coin named ${name}, 2d vector art, white background`);
-        const aiUrl = `https://image.pollinations.ai/prompt/${prompt}?width=250&height=250&nologo=true`;
-        
-        const previewBox = document.getElementById("aiPreview");
-        previewBox.innerHTML = `<span style="font-size: 12px; color: var(--accent-blue);"><i class="fa-solid fa-spinner fa-spin"></i> Generating AI Artwork...</span>`;
-
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = aiUrl;
-        img.onload = () => {
-            previewBox.innerHTML = `<img src="${aiUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
-            generatedAiImageUrl = aiUrl;
-        };
-        img.onerror = () => { previewBox.innerHTML = `<span style="font-size: 12px; color: #ef4444;">Failed to generate. Try again.</span>`; };
-    }
-
-    function handleImageUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                const tempCanvas = document.createElement("canvas");
-                tempCanvas.width = 128; tempCanvas.height = 128;
-                const tempCtx = tempCanvas.getContext("2d");
-                tempCtx.drawImage(img, 0, 0, 128, 128);
-                uploadedImageUrl = tempCanvas.toDataURL("image/png", 0.7);
-                document.getElementById("previewImg").src = uploadedImageUrl;
-                document.getElementById("uploadPreview").style.display = "flex";
-            };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
+    // --- إعدادات العقد الذكي للإنشاء ---
+    const contractAddress = "0xb2C90c312201d312687D3063f60deB1216173DBc";
+    const contractABI = ["function createToken(string memory name, string memory symbol, string memory tokenURI) public payable returns (address)"];
+    let signer; let factoryContract;
 
     async function connectWallet() {
-        if (!window.ethereum) { alert("Please install MetaMask or Web3 Browser!"); return; }
-        try {
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send("eth_requestAccounts", []);
-            const network = await provider.getNetwork();
-            if (network.chainId !== 56) { await switchNetwork(); return; }
-
-            signer = provider.getSigner();
-            const address = await signer.getAddress();
-            document.getElementById("walletAddress").innerText = "Connected: " + address.substring(0, 6) + "..." + address.substring(address.length - 4);
-            document.getElementById("walletBtn").innerHTML = `<i class="fa-solid fa-check-circle"></i> Wallet Connected`;
-            document.getElementById("walletBtn").style.background = "#059669";
-
-            factoryContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-            document.getElementById("outputStatus").innerText = "Status: Connected & ready to launch!";
-        } catch (error) {
-            document.getElementById("outputStatus").innerText = "Error: " + (error.message || "Failed to connect");
-        }
-    }
-
-    async function switchNetwork() {
-        try {
-            await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_CHAIN_ID }] });
-            connectWallet();
-        } catch (e) { alert("Please switch your wallet to BNB Smart Chain Mainnet!"); }
-    }
-
-    function getOptimizedCanvasData() {
-        const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = 128; tempCanvas.height = 128;
-        const tempCtx = tempCanvas.getContext("2d");
-        tempCtx.drawImage(canvas, 0, 0, 128, 128);
-        return tempCanvas.toDataURL("image/png", 0.7);
+        if (window.ethereum) {
+            try {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                const address = await signer.getAddress();
+                document.getElementById("walletAddress").innerText = "Connected: " + address.substring(0,6) + "..." + address.substring(38);
+                factoryContract = new ethers.Contract(contractAddress, contractABI, signer);
+                document.getElementById("outputStatus").innerText = "Wallet Connected! Ready.";
+                document.getElementById("lastBuyerDisplay").innerText = "Last Action By: " + address.substring(0,6) + "...";
+            } catch (error) { alert("Failed to connect wallet!"); }
+        } else { alert("Please use a Web3 browser like Mises!"); }
     }
 
     async function createToken() {
-        if (!factoryContract) { await connectWallet(); if (!factoryContract) return; }
-
-        const name = document.getElementById("tokenName").value.trim();
-        const symbol = document.getElementById("tokenSymbol").value.trim();
+        if (!factoryContract) { alert("Connect wallet first!"); return; }
+        const name = document.getElementById("tokenName").value;
+        const symbol = document.getElementById("tokenSymbol").value;
         const bnbAmount = document.getElementById("buyAmount").value;
 
-        if (!name || !symbol) { alert("Please enter Name & Symbol!"); return; }
         if (parseFloat(bnbAmount) < 0.01) { alert("Min amount is 0.01 BNB!"); return; }
 
-        let finalTokenURI = currentArtMode === 'ai' ? generatedAiImageUrl : (currentArtMode === 'upload' ? uploadedImageUrl : getOptimizedCanvasData());
-        if (currentArtMode === 'upload' && !uploadedImageUrl) { alert("Please select an image file!"); return; }
-
-        const launchBtn = document.getElementById("launchBtn");
-        launchBtn.disabled = true; launchBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Launching...`;
-
+        document.getElementById("outputStatus").innerText = "🔥 Processing... Do not close!";
+        
         try {
-            document.getElementById("outputStatus").innerText = "Status: Confirm transaction in wallet...";
-            const tx = await factoryContract.createToken(name, symbol, finalTokenURI, { value: ethers.utils.parseEther(bnbAmount) });
-            document.getElementById("outputStatus").innerText = "Status: Transaction sent! Confirming...";
+            const tx = await factoryContract.createToken(name, symbol, "URI_PENDING", { value: ethers.utils.parseEther(bnbAmount) });
+            document.getElementById("outputStatus").innerText = "Waiting for block confirmation...";
             await tx.wait();
-
-            currentTxHash = tx.hash;
-            if (typeof confetti === "function") confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-
-            generateLaunchKit(name, symbol, finalTokenURI);
-
-            document.getElementById("outputStatus").innerText = "🎉 Token launched successfully!";
+            
+            // إعادة ضبط وقت الجائزة الكبرى بعد الإطلاق!
+            countdownTime = 600; 
+            document.getElementById("outputStatus").innerHTML = "🎉 <b style='color: #4ade80;'>TOKEN LAUNCHED! YOU RESET THE TIMER!</b> 🚀";
         } catch (error) {
-            document.getElementById("outputStatus").innerText = "Error: " + (error.reason || error.message || "Failed");
-        } finally {
-            launchBtn.disabled = false; launchBtn.innerHTML = "Launch Token Now 🪙";
+            document.getElementById("outputStatus").innerText = "Error: " + (error.message || error);
         }
     }
-
-    function generateLaunchKit(name, symbol, logoUri) {
-        const isChaos = document.getElementById("chaosToggle").checked;
-        const isAntiSnipe = document.getElementById("antiSnipeToggle").checked;
-
-        const lores = [
-            `Legend says $${symbol} was created to bring massive gains to BNB holders! 🚀`,
-            `Born on BSC, $${symbol} is destined to pump beyond the moon! 🌙`,
-            `The ultimate meme token $${symbol} has officially woken up! 🔥`
-        ];
-        const randomLore = lores[Math.floor(Math.random() * lores.length)];
-        document.getElementById("aiLoreText").innerText = randomLore;
-
-        const cCard = document.getElementById("cardCanvas");
-        const ctxC = cCard.getContext("2d");
-        ctxC.fillStyle = isChaos ? "#000000" : "#111827"; 
-        ctxC.fillRect(0, 0, 360, 180);
-        
-        if (isChaos) {
-            ctxC.strokeStyle = "#ec4899"; ctxC.lineWidth = 4;
-            ctxC.strokeRect(4, 4, 352, 172);
-        }
-
-        ctxC.fillStyle = "#38bdf8"; ctxC.font = "bold 18px 'Plus Jakarta Sans'";
-        ctxC.fillText(`🚀 $${symbol}`, 20, 40);
-        
-        ctxC.fillStyle = "#ffffff"; ctxC.font = "14px 'Plus Jakarta Sans'";
-        ctxC.fillText(name, 20, 65);
-
-        ctxC.fillStyle = "#10b981"; ctxC.font = "bold 12px 'Plus Jakarta Sans'";
-        ctxC.fillText(isAntiSnipe ? "🛡️ ANTI-BOT SHIELD PROTECTED" : "LIVE ON CHAINPUMP BNB 🔥", 20, 150);
-
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.onload = () => { ctxC.drawImage(img, 220, 25, 120, 120); };
-        img.src = logoUri;
-
-        const tweetText = encodeURIComponent(`🚀 Launched $${symbol} (${name}) on ChainPump BNB!\n\n${randomLore}\n\nTx: https://bscscan.com/tx/${currentTxHash}`);
-        document.getElementById("twitterShareBtn").href = `https://twitter.com/intent/tweet?text=${tweetText}`;
-
-        document.getElementById("successModal").style.display = "flex";
-    }
-
-    function downloadMemeCard() {
-        const cCard = document.getElementById("cardCanvas");
-        const a = document.createElement("a");
-        a.href = cCard.toDataURL("image/png");
-        a.download = "ChainPump_Promo_Card.png";
-        a.click();
-    }
-
-    function copyTelegramMsg() {
-        const symbol = document.getElementById("tokenSymbol").value;
-        const msg = `🚀 NEW PUMP GEM ALERT! 🚀\n\nCoin: $${symbol}\nChain: BNB Smart Chain\nTx: https://bscscan.com/tx/${currentTxHash}\n\nJoin early on ChainPump BNB! 🔥`;
-        navigator.clipboard.writeText(msg);
-        alert("Telegram Raid message copied to clipboard!");
-    }
-
-    function closeModal() { document.getElementById("successModal").style.display = "none"; }
 </script>
 
 </body>
