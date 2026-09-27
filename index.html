@@ -3,138 +3,398 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChainPump BNB 🚀 | Multi-Feature Platform</title>
+    <title>ChainPump BNB | Binance Web3 Launchpad</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 0; }
-        .navbar { background: #1e293b; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #334155; }
-        .nav-brand { font-size: 18px; font-weight: bold; color: #38bdf8; }
-        .nav-links { display: flex; gap: 10px; overflow-x: auto; }
-        .nav-btn { background: transparent; border: 1px solid #38bdf8; color: #38bdf8; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; white-space: nowrap; }
-        .nav-btn.active { background: #38bdf8; color: #0f172a; font-weight: bold; }
-        
-        .container { max-width: 500px; margin: 20px auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .page { display: none; }
-        .page.active { display: block; }
+        /* === Binance Official Dark Theme Palette === */
+        :root {
+            --bg-main: #0b0e11;
+            --bg-card: #181a20;
+            --bg-input: #2b313a;
+            --binance-yellow: #f0b90b;
+            --binance-yellow-hover: #fcd535;
+            --text-primary: #eaecef;
+            --text-muted: #848e9c;
+            --green-bull: #0ecb81;
+            --red-bear: #f6465d;
+            --border-color: #2b313a;
+        }
 
-        h3 { color: #facc15; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 0; }
-        .btn { width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; font-weight: bold; }
-        .btn:hover { background: #0369a1; }
-        .btn-danger { background: #ef4444; }
-        .btn-danger:hover { background: #dc2626; }
-        .btn-success { background: #16a34a; }
-        
-        input { width: 100%; padding: 10px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
-        .stats-box { background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 15px; text-align: center; }
-        .stats-value { font-size: 24px; color: #4ade80; font-weight: bold; margin: 10px 0; }
-        
-        /* منحنى الترابط (Bonding Curve Visual) */
-        .curve-visual { width: 100%; height: 100px; background: linear-gradient(90deg, #16a34a 30%, #334155 30%); border-radius: 8px; margin: 15px 0; position: relative; border: 1px solid #4ade80; }
-        .curve-text { position: absolute; width: 100%; text-align: center; top: 40%; font-size: 14px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        /* === Binance Header Nav === */
+        .header {
+            background-color: var(--bg-card);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--binance-yellow);
+        }
+        .network-badge {
+            background: #202630;
+            color: var(--binance-yellow);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            border: 1px solid var(--binance-yellow);
+        }
+        .connect-btn {
+            background-color: var(--binance-yellow);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .connect-btn:hover { background-color: var(--binance-yellow-hover); }
+
+        /* === Ticker Bar === */
+        .ticker-bar {
+            background-color: #12161c;
+            padding: 8px 20px;
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .ticker-item span { color: var(--green-bull); font-weight: bold; }
+
+        /* === Main Dashboard Layout === */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
+
+        /* === Tabs Navigation === */
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            background: var(--bg-card);
+            padding: 5px;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+        }
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background-color: var(--bg-input);
+            color: var(--binance-yellow);
+        }
+
+        .tab-content {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* === Form Components === */
+        .form-group { margin-bottom: 15px; position: relative; }
+        label { display: block; color: var(--text-muted); margin-bottom: 5px; font-size: 12px; }
+        input[type="text"] {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 40px 10px 10px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--binance-yellow); }
+        .mic-btn {
+            position: absolute;
+            right: 8px;
+            top: 28px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .mic-btn:hover { color: var(--binance-yellow); }
+
+        /* === Jackpot Box (Binance Style) === */
+        .jackpot-banner {
+            background: linear-gradient(130deg, #1e1b11 0%, #2b220a 100%);
+            border: 1px solid var(--binance-yellow);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .jackpot-val { font-size: 24px; font-weight: bold; color: var(--binance-yellow); }
+
+        /* === Primary Action Button === */
+        .btn-launch {
+            width: 100%;
+            background-color: var(--binance-yellow);
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-launch:hover { background-color: var(--binance-yellow-hover); }
+
+        /* === Trending Sidebar === */
+        .sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .token-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .token-row:last-child { border: none; }
+        .token-symbol { font-weight: bold; color: var(--text-primary); }
+        .token-gain { color: var(--green-bull); font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- شريط التنقل العلوي -->
-    <div class="navbar">
-        <div class="nav-brand">⚡ ChainPump BNB</div>
-        <div class="nav-links">
-            <button class="nav-btn active" onclick="switchPage('launch')">🚀 Launch</button>
-            <button class="nav-btn" onclick="switchPage('trade')">📈 Curve & Trade</button>
-            <button class="nav-btn" onclick="switchPage('burn')">🔥 Burn</button>
-            <button class="nav-btn" onclick="switchPage('referral')">🔗 Referrals</button>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-area">
+            <span>⚡ ChainPump</span>
+            <span class="network-badge">BNB CHAIN</span>
         </div>
+        <button class="connect-btn" id="walletBtn" onclick="connectWallet()">Connect Wallet</button>
     </div>
 
-    <div class="container">
-        <button class="btn" id="connectBtn" onclick="connectWallet()">🔗 Connect Wallet</button>
-        <p id="walletAddress" style="font-size: 12px; color: #38bdf8; text-align: center; margin-top: 8px;">Not Connected</p>
+    <!-- Ticker Bar -->
+    <div class="ticker-bar">
+        <div class="ticker-item">Creation Fee: <span>0.005 BNB</span></div>
+        <div class="ticker-item">BNB/USD: <span>$778.50</span></div>
+        <div class="ticker-item">24h Tokens Launched: <span>142</span></div>
+        <div class="ticker-item">Total LP Burned: <span>100%</span></div>
+    </div>
 
-        <!-- صفحة 1: الإطلاق والجوائز -->
-        <div id="launch" class="page active">
-            <h3>🏆 Launch & Jackpot</h3>
-            <div class="stats-box" style="border-color: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);">
-                <div style="color: #f59e0b; font-weight: bold;">Grand Jackpot Pool</div>
-                <div class="stats-value" style="color: #facc15;">5.2 BNB</div>
-                <div style="color: #94a3b8; font-size: 14px;">⏳ Timer: 00:09:59</div>
+    <!-- Main Container -->
+    <div class="main-layout">
+        <div>
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="showTab('launchTab')">🚀 Launchpad</button>
+                <button class="tab-btn" onclick="showTab('tradeTab')">📈 Bonding Curve</button>
+                <button class="tab-btn" onclick="showTab('burnTab')">🔥 Burn Portal</button>
+                <button class="tab-btn" onclick="showTab('refTab')">🎁 Referrals</button>
             </div>
-            <label>Token Name:</label>
-            <input type="text" id="tokenName" placeholder="e.g. ChainPump Gem">
-            <label>Initial Launch Amount (BNB):</label>
-            <input type="text" id="buyAmount" value="0.01">
-            <button class="btn btn-success">🚀 Launch Token</button>
+
+            <!-- Tab 1: Launchpad -->
+            <div id="launchTab" class="tab-content">
+                <!-- Jackpot Banner -->
+                <div class="jackpot-banner">
+                    <div>
+                        <div style="color: var(--text-muted); font-size: 11px;">BINANCE GRAND JACKPOT</div>
+                        <div class="jackpot-val">6.48 BNB</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--binance-yellow); font-family: monospace; font-size: 16px;">⏳ 00:08:45</div>
+                        <div style="font-size: 10px; color: var(--text-muted);">Timer resets on every launch</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Token Name</label>
+                    <input type="text" id="tokenName" placeholder="e.g. Binance Doge">
+                    <button class="mic-btn" onclick="startVoice('tokenName')">🎤</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Token Symbol</label>
+                    <input type="text" id="tokenSymbol" placeholder="e.g. BDOGE">
+                    <button class="mic-btn" onclick="startVoice('tokenSymbol')">🎤</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Logo Generation (Doodle / Prompt)</label>
+                    <input type="text" id="logoPrompt" placeholder="Describe or sketch logo...">
+                    <button class="mic-btn" onclick="startVoice('logoPrompt')">🎤</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Initial Buy Amount (Min: 0.005 BNB)</label>
+                    <input type="text" id="buyAmount" value="0.005">
+                </div>
+
+                <button class="btn-launch" onclick="createToken()">🚀 Launch Token (0.005 BNB)</button>
+                <p id="statusMsg" style="text-align: center; color: var(--binance-yellow); margin-top: 10px; font-size: 12px;"></p>
+            </div>
+
+            <!-- Tab 2: Bonding Curve Trade -->
+            <div id="tradeTab" class="tab-content" style="display: none;">
+                <h4 style="margin-top: 0; color: var(--binance-yellow);">Bonding Curve Progress</h4>
+                <div style="background: var(--bg-input); height: 20px; border-radius: 4px; overflow: hidden; margin-bottom: 15px;">
+                    <div style="background: var(--green-bull); width: 45%; height: 100%; text-align: center; font-size: 11px; line-height: 20px; color: #000; font-weight: bold;">45% (4.5 / 10 BNB)</div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-launch" style="background: var(--green-bull);">Buy Token</button>
+                    <button class="btn-launch" style="background: var(--red-bear); color: white;">Sell Token</button>
+                </div>
+            </div>
+
+            <!-- Tab 3: Burn Portal -->
+            <div id="burnTab" class="tab-content" style="display: none;">
+                <h4 style="margin-top: 0; color: var(--red-bear);">🔥 Permanent Token Burn</h4>
+                <p style="color: var(--text-muted); font-size: 12px;">Burn tokens to reduce circulating supply and pump price floor.</p>
+                <div class="form-group">
+                    <label>Amount to Burn</label>
+                    <input type="text" placeholder="Enter amount...">
+                </div>
+                <button class="btn-launch" style="background: var(--red-bear); color: white;">Burn Tokens</button>
+            </div>
+
+            <!-- Tab 4: Referrals -->
+            <div id="refTab" class="tab-content" style="display: none;">
+                <h4 style="margin-top: 0; color: var(--binance-yellow);">🎁 Affiliate Program</h4>
+                <p style="color: var(--text-muted); font-size: 12px;">Earn 0.5% protocol fee rewards on all trades made via your link.</p>
+                <div class="form-group">
+                    <label>Your Referral Link</label>
+                    <input type="text" id="refLink" readonly value="Connect wallet to view link...">
+                </div>
+                <button class="btn-launch" onclick="copyRef()">Copy Link</button>
+            </div>
         </div>
 
-        <!-- صفحة 2: التداول ومنحنى الترابط -->
-        <div id="trade" class="page">
-            <h3>📈 Bonding Curve & Trading</h3>
-            <p style="font-size: 13px; color: #94a3b8;">Current Target: 10 BNB to graduate to PancakeSwap.</p>
+        <!-- Sidebar: Binance Square Trending Feed -->
+        <div class="sidebar">
+            <h4 style="margin-top: 0; color: var(--binance-yellow); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">🔥 Trending Memes</h4>
             
-            <div class="curve-visual">
-                <div class="curve-text">30% Curve Completed (3.0 / 10 BNB)</div>
+            <div class="token-row">
+                <div>
+                    <div class="token-symbol">PEPEK</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">MC: $45.2K</div>
+                </div>
+                <div class="token-gain">+320%</div>
             </div>
 
-            <div style="display: flex; gap: 10px;">
-                <input type="text" placeholder="Amount in BNB" style="margin:0;">
-                <button class="btn btn-success" style="margin:0;">Buy</button>
-                <button class="btn btn-danger" style="margin:0;">Sell</button>
+            <div class="token-row">
+                <div>
+                    <div class="token-symbol">CPUMP</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">MC: $12.8K</div>
+                </div>
+                <div class="token-gain">+145%</div>
             </div>
-        </div>
 
-        <!-- صفحة 3: نظام الحرق -->
-        <div id="burn" class="page">
-            <h3>🔥 Token Burn Portal</h3>
-            <div class="stats-box">
-                <div>Total Tokens Burned Globally</div>
-                <div class="stats-value" style="color: #ef4444;">1,250,000,000</div>
+            <div class="token-row">
+                <div>
+                    <div class="token-symbol">GUY</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">MC: $8.9K</div>
+                </div>
+                <div class="token-gain">+88%</div>
             </div>
-            <label>Amount to Burn:</label>
-            <input type="text" placeholder="Enter amount...">
-            <button class="btn btn-danger">🔥 Burn Tokens & Boost Value</button>
-        </div>
-
-        <!-- صفحة 4: نظام الإحالات -->
-        <div id="referral" class="page">
-            <h3>🔗 Affiliate & Referrals</h3>
-            <div class="stats-box">
-                <div>Your Total Referral Earnings</div>
-                <div class="stats-value">0.45 BNB</div>
-                <button class="btn btn-success" style="padding: 8px; font-size: 14px; width: auto; margin-top: 10px;">Claim Rewards</button>
-            </div>
-            <label>Your Unique Referral Link:</label>
-            <input type="text" id="refLink" readonly value="Connect wallet to generate link...">
-            <button class="btn" onclick="copyRef()">📋 Copy Link</button>
         </div>
     </div>
 
     <script>
-        // نظام التنقل بين الصفحات
-        function switchPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+        // Tab Switcher
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).style.display = 'block';
             event.target.classList.add('active');
         }
 
-        let signer;
+        // Voice Input
+        function startVoice(inputId) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!SpeechRecognition) { alert("Voice input not supported in this browser."); return; }
+            const rec = new SpeechRecognition();
+            rec.lang = 'en-US';
+            rec.onresult = (e) => { document.getElementById(inputId).value = e.results[0][0].transcript; };
+            rec.start();
+        }
+
+        // Wallet Connection & Smart Contract Setup
+        const feeWallet = "0x1aafcdcd027ad78ad6847164a4cc70e3f07ecca7";
+        const contractAddress = "0xb2C90c312201d312687D3063f60deB1216173DBc";
+        const contractABI = ["function createToken(string name, string symbol, string uri) external payable returns (address)"];
+        let signer; let factoryContract;
+
         async function connectWallet() {
             if (window.ethereum) {
                 try {
                     await window.ethereum.request({ method: 'eth_requestAccounts' });
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     signer = provider.getSigner();
-                    const address = await signer.getAddress();
-                    document.getElementById("walletAddress").innerText = "Connected: " + address.substring(0,6) + "..." + address.substring(38);
-                    
-                    // توليد رابط الإحالة تلقائياً عند الاتصال
-                    document.getElementById("refLink").value = "https://chainpumpbnb.vercel.app/?ref=" + address;
-                } catch (error) { alert("Connection failed!"); }
-            } else { alert("Use a Web3 browser!"); }
+                    const addr = await signer.getAddress();
+                    document.getElementById("walletBtn").innerText = addr.substring(0,6) + "..." + addr.substring(38);
+                    document.getElementById("refLink").value = "https://chainpumpbnb.vercel.app/?ref=" + addr;
+                    factoryContract = new ethers.Contract(contractAddress, contractABI, signer);
+                } catch (e) { alert("Wallet connection failed!"); }
+            } else { alert("Please open inside Mises or Web3 Wallet!"); }
+        }
+
+        async function createToken() {
+            if(!factoryContract) { alert("Connect wallet first!"); return; }
+            const name = document.getElementById("tokenName").value;
+            const symbol = document.getElementById("tokenSymbol").value;
+            const amount = document.getElementById("buyAmount").value;
+
+            if(parseFloat(amount) < 0.005) { alert("Min fee is 0.005 BNB!"); return; }
+
+            document.getElementById("statusMsg").innerText = "⏳ Processing transaction... Fee sent to owner wallet.";
+            
+            try {
+                const tx = await factoryContract.createToken(name, symbol, "URI_PENDING", {
+                    value: ethers.utils.parseEther(amount)
+                });
+                await tx.wait();
+                document.getElementById("statusMsg").innerText = "🎉 TOKEN LAUNCHED! 0.005 BNB SENT TO YOUR WALLET!";
+            } catch(e) {
+                document.getElementById("statusMsg").innerText = "Error: " + (e.message || e);
+            }
         }
 
         function copyRef() {
-            const copyText = document.getElementById("refLink");
-            copyText.select();
+            const link = document.getElementById("refLink");
+            link.select();
             document.execCommand("copy");
             alert("Referral link copied!");
         }
