@@ -6,7 +6,6 @@
     <title>ChainPump BNB | Binance Web3 Launchpad</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <style>
-        /* === Binance Official Dark Theme Palette === */
         :root {
             --bg-main: #0b0e11;
             --bg-card: #181a20;
@@ -21,7 +20,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-primary);
             margin: 0;
@@ -29,7 +28,6 @@
             font-size: 14px;
         }
 
-        /* === Binance Header Nav === */
         .header {
             background-color: var(--bg-card);
             padding: 12px 20px;
@@ -66,7 +64,6 @@
         }
         .connect-btn:hover { background-color: var(--binance-yellow-hover); }
 
-        /* === Ticker Bar === */
         .ticker-bar {
             background-color: #12161c;
             padding: 8px 20px;
@@ -79,7 +76,6 @@
         }
         .ticker-item span { color: var(--green-bull); font-weight: bold; }
 
-        /* === Main Dashboard Layout === */
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 320px;
@@ -90,7 +86,6 @@
         }
         @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
 
-        /* === Tabs Navigation === */
         .nav-tabs {
             display: flex;
             gap: 5px;
@@ -123,7 +118,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* === Form Components === */
         .form-group { margin-bottom: 15px; position: relative; }
         label { display: block; color: var(--text-muted); margin-bottom: 5px; font-size: 12px; }
         input[type="text"] {
@@ -149,7 +143,39 @@
         }
         .mic-btn:hover { color: var(--binance-yellow); }
 
-        /* === Jackpot Box (Binance Style) === */
+        /* === Canvas & Logo Creator Controls === */
+        .logo-box-container {
+            background: var(--bg-input);
+            border: 1px dashed var(--binance-yellow);
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        canvas {
+            background: #ffffff;
+            border-radius: 6px;
+            cursor: crosshair;
+            touch-action: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .canvas-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .tool-btn {
+            background: #333d4b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .tool-btn:hover { background: #475467; }
+
         .jackpot-banner {
             background: linear-gradient(130deg, #1e1b11 0%, #2b220a 100%);
             border: 1px solid var(--binance-yellow);
@@ -162,7 +188,6 @@
         }
         .jackpot-val { font-size: 24px; font-weight: bold; color: var(--binance-yellow); }
 
-        /* === Primary Action Button === */
         .btn-launch {
             width: 100%;
             background-color: var(--binance-yellow);
@@ -177,7 +202,6 @@
         }
         .btn-launch:hover { background-color: var(--binance-yellow-hover); }
 
-        /* === Trending Sidebar === */
         .sidebar {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -252,10 +276,22 @@
                     <button class="mic-btn" onclick="startVoice('tokenSymbol')">🎤</button>
                 </div>
 
+                <!-- 🎨 قسم تصميم الشعار الحقيقي والتفاعلي -->
                 <div class="form-group">
-                    <label>Logo Generation (Doodle / Prompt)</label>
-                    <input type="text" id="logoPrompt" placeholder="Describe or sketch logo...">
+                    <label>Logo Generation Prompt (Voice or Text)</label>
+                    <input type="text" id="logoPrompt" placeholder="e.g. Cute Pepe Rocket Moon...">
                     <button class="mic-btn" onclick="startVoice('logoPrompt')">🎤</button>
+                </div>
+
+                <div class="logo-box-container">
+                    <label style="color: var(--binance-yellow); margin-bottom: 8px;">🎨 Interactive Logo Canvas & Preview</label>
+                    <canvas id="sketchpad" width="240" height="160"></canvas>
+                    
+                    <div class="canvas-tools">
+                        <input type="color" id="brushColor" value="#f0b90b" style="background:none; border:none; cursor:pointer; width:30px; height:30px;">
+                        <button class="tool-btn" onclick="generateAIDoodle()">🤖 Generate AI Logo</button>
+                        <button class="tool-btn" onclick="clearCanvas()" style="background:#f6465d;">🗑️ Clear</button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -267,7 +303,7 @@
                 <p id="statusMsg" style="text-align: center; color: var(--binance-yellow); margin-top: 10px; font-size: 12px;"></p>
             </div>
 
-            <!-- Tab 2: Bonding Curve Trade -->
+            <!-- Tab 2: Trade -->
             <div id="tradeTab" class="tab-content" style="display: none;">
                 <h4 style="margin-top: 0; color: var(--binance-yellow);">Bonding Curve Progress</h4>
                 <div style="background: var(--bg-input); height: 20px; border-radius: 4px; overflow: hidden; margin-bottom: 15px;">
@@ -279,10 +315,10 @@
                 </div>
             </div>
 
-            <!-- Tab 3: Burn Portal -->
+            <!-- Tab 3: Burn -->
             <div id="burnTab" class="tab-content" style="display: none;">
                 <h4 style="margin-top: 0; color: var(--red-bear);">🔥 Permanent Token Burn</h4>
-                <p style="color: var(--text-muted); font-size: 12px;">Burn tokens to reduce circulating supply and pump price floor.</p>
+                <p style="color: var(--text-muted); font-size: 12px;">Burn tokens to reduce supply and boost value.</p>
                 <div class="form-group">
                     <label>Amount to Burn</label>
                     <input type="text" placeholder="Enter amount...">
@@ -293,7 +329,7 @@
             <!-- Tab 4: Referrals -->
             <div id="refTab" class="tab-content" style="display: none;">
                 <h4 style="margin-top: 0; color: var(--binance-yellow);">🎁 Affiliate Program</h4>
-                <p style="color: var(--text-muted); font-size: 12px;">Earn 0.5% protocol fee rewards on all trades made via your link.</p>
+                <p style="color: var(--text-muted); font-size: 12px;">Earn rewards on all trades made via your link.</p>
                 <div class="form-group">
                     <label>Your Referral Link</label>
                     <input type="text" id="refLink" readonly value="Connect wallet to view link...">
@@ -302,7 +338,7 @@
             </div>
         </div>
 
-        <!-- Sidebar: Binance Square Trending Feed -->
+        <!-- Sidebar -->
         <div class="sidebar">
             <h4 style="margin-top: 0; color: var(--binance-yellow); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">🔥 Trending Memes</h4>
             
@@ -321,19 +357,87 @@
                 </div>
                 <div class="token-gain">+145%</div>
             </div>
-
-            <div class="token-row">
-                <div>
-                    <div class="token-symbol">GUY</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">MC: $8.9K</div>
-                </div>
-                <div class="token-gain">+88%</div>
-            </div>
         </div>
     </div>
 
     <script>
-        // Tab Switcher
+        // --- 1. إعدادات لوحة الرسم التفاعلية (Canvas Setup) ---
+        const canvas = document.getElementById("sketchpad");
+        const ctx = canvas.getContext("2d");
+        let painting = false;
+
+        function initCanvas() {
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        initCanvas();
+
+        function startPos(e) { painting = true; draw(e); }
+        function endPos() { painting = false; ctx.beginPath(); }
+        function draw(e) {
+            if (!painting) return;
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            ctx.lineWidth = 4;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = document.getElementById("brushColor").value;
+
+            ctx.lineTo(clientX - rect.left, clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(clientX - rect.left, clientY - rect.top);
+        }
+
+        canvas.addEventListener("mousedown", startPos);
+        canvas.addEventListener("mouseup", endPos);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("touchstart", startPos);
+        canvas.addEventListener("touchend", endPos);
+        canvas.addEventListener("touchmove", draw);
+
+        function clearCanvas() {
+            initCanvas();
+        }
+
+        // --- 2. محرك إنشاء وتوليد اللوجو الآلي (AI Doodle Generator Engine) ---
+        function generateAIDoodle() {
+            const prompt = document.getElementById("logoPrompt").value || "Meme Gem";
+            initCanvas();
+
+            // خلفية ملونة ديناميكية
+            const colors = ["#f0b90b", "#0ecb81", "#38bdf8", "#ec4899", "#8b5cf6"];
+            const randomBg = colors[Math.floor(Math.random() * colors.length)];
+            
+            ctx.fillStyle = randomBg;
+            ctx.beginPath();
+            ctx.arc(120, 80, 60, 0, Math.PI * 2);
+            ctx.fill();
+
+            // رسم وجه الميم الكرتوني الضاحك
+            ctx.fillStyle = "#000000";
+            // العينان
+            ctx.beginPath();
+            ctx.arc(100, 70, 8, 0, Math.PI * 2);
+            ctx.arc(140, 70, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // ابتسامة الميم العريضة
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(120, 85, 25, 0.1 * Math.PI, 0.9 * Math.PI);
+            ctx.stroke();
+
+            // كتابة اسم الوصف أسفل الرسمة
+            ctx.fillStyle = "#000000";
+            ctx.font = "bold 14px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(prompt.substring(0, 15), 120, 150);
+        }
+
+        // --- 3. الصوت والتبني ---
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -341,17 +445,20 @@
             event.target.classList.add('active');
         }
 
-        // Voice Input
         function startVoice(inputId) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if(!SpeechRecognition) { alert("Voice input not supported in this browser."); return; }
             const rec = new SpeechRecognition();
             rec.lang = 'en-US';
-            rec.onresult = (e) => { document.getElementById(inputId).value = e.results[0][0].transcript; };
+            rec.onresult = (e) => {
+                const text = e.results[0][0].transcript;
+                document.getElementById(inputId).value = text;
+                if(inputId === 'logoPrompt') { generateAIDoodle(); }
+            };
             rec.start();
         }
 
-        // Wallet Connection & Smart Contract Setup
+        // --- 4. العقد الذكي والتثبيت مع تحويل الرسوم لمحفظتك ---
         const feeWallet = "0x1aafcdcd027ad78ad6847164a4cc70e3f07ecca7";
         const contractAddress = "0xb2C90c312201d312687D3063f60deB1216173DBc";
         const contractABI = ["function createToken(string name, string symbol, string uri) external payable returns (address)"];
@@ -379,14 +486,17 @@
 
             if(parseFloat(amount) < 0.005) { alert("Min fee is 0.005 BNB!"); return; }
 
-            document.getElementById("statusMsg").innerText = "⏳ Processing transaction... Fee sent to owner wallet.";
+            // استخراج صورة الشعار المرسومة بتنسيق Base64 PNG
+            const imageURI = canvas.toDataURL("image/png");
+
+            document.getElementById("statusMsg").innerText = "⏳ Processing transaction... Sending 0.005 BNB fee to owner wallet.";
             
             try {
-                const tx = await factoryContract.createToken(name, symbol, "URI_PENDING", {
+                const tx = await factoryContract.createToken(name, symbol, imageURI, {
                     value: ethers.utils.parseEther(amount)
                 });
                 await tx.wait();
-                document.getElementById("statusMsg").innerText = "🎉 TOKEN LAUNCHED! 0.005 BNB SENT TO YOUR WALLET!";
+                document.getElementById("statusMsg").innerHTML = "🎉 <b style='color: #0ecb81;'>TOKEN & LOGO LAUNCHED! 0.005 BNB SENT TO YOUR WALLET!</b>";
             } catch(e) {
                 document.getElementById("statusMsg").innerText = "Error: " + (e.message || e);
             }
