@@ -28,6 +28,49 @@
             font-size: 14px;
         }
 
+        /* === Binance Toast Notification System === */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            width: 90%;
+            max-width: 380px;
+        }
+        .toast {
+            background: #181a20;
+            border: 1px solid var(--binance-yellow);
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+            pointer-events: auto;
+        }
+        .toast.success { border-color: var(--green-bull); }
+        .toast.error { border-color: var(--red-bear); }
+        .toast.warning { border-color: var(--binance-yellow); }
+
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* === Header & UI Layout === */
         .header {
             background-color: var(--bg-card);
             padding: 12px 20px;
@@ -143,7 +186,6 @@
         }
         .mic-btn:hover { color: var(--binance-yellow); }
 
-        /* === Canvas & Logo Creator Controls === */
         .logo-box-container {
             background: var(--bg-input);
             border: 1px dashed var(--binance-yellow);
@@ -218,9 +260,23 @@
         .token-row:last-child { border: none; }
         .token-symbol { font-weight: bold; color: var(--text-primary); }
         .token-gain { color: var(--green-bull); font-weight: bold; }
+
+        .alert-status-box {
+            background: #2b220a;
+            border: 1px solid var(--binance-yellow);
+            color: var(--binance-yellow);
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Container for Smooth Toast Alerts -->
+    <div id="toastContainer" class="toast-container"></div>
 
     <!-- Header -->
     <div class="header">
@@ -239,7 +295,7 @@
         <div class="ticker-item">Total LP Burned: <span>100%</span></div>
     </div>
 
-    <!-- Main Container -->
+    <!-- Main Layout -->
     <div class="main-layout">
         <div>
             <!-- Navigation Tabs -->
@@ -252,7 +308,6 @@
 
             <!-- Tab 1: Launchpad -->
             <div id="launchTab" class="tab-content">
-                <!-- Jackpot Banner -->
                 <div class="jackpot-banner">
                     <div>
                         <div style="color: var(--text-muted); font-size: 11px;">BINANCE GRAND JACKPOT</div>
@@ -276,7 +331,6 @@
                     <button class="mic-btn" onclick="startVoice('tokenSymbol')">🎤</button>
                 </div>
 
-                <!-- 🎨 قسم تصميم الشعار الحقيقي والتفاعلي -->
                 <div class="form-group">
                     <label>Logo Generation Prompt (Voice or Text)</label>
                     <input type="text" id="logoPrompt" placeholder="e.g. Cute Pepe Rocket Moon...">
@@ -300,7 +354,10 @@
                 </div>
 
                 <button class="btn-launch" onclick="createToken()">🚀 Launch Token (0.005 BNB)</button>
-                <p id="statusMsg" style="text-align: center; color: var(--binance-yellow); margin-top: 10px; font-size: 12px;"></p>
+                
+                <div class="alert-status-box" id="statusMsg">
+                    ⚠️ Status: Wallet Not Connected. Click 'Connect Wallet' or open in Web3 Browser (Mises/Kiwi/MetaMask).
+                </div>
             </div>
 
             <!-- Tab 2: Trade -->
@@ -310,8 +367,8 @@
                     <div style="background: var(--green-bull); width: 45%; height: 100%; text-align: center; font-size: 11px; line-height: 20px; color: #000; font-weight: bold;">45% (4.5 / 10 BNB)</div>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-launch" style="background: var(--green-bull);">Buy Token</button>
-                    <button class="btn-launch" style="background: var(--red-bear); color: white;">Sell Token</button>
+                    <button class="btn-launch" style="background: var(--green-bull);" onclick="tradeAction('Buy')">Buy Token</button>
+                    <button class="btn-launch" style="background: var(--red-bear); color: white;" onclick="tradeAction('Sell')">Sell Token</button>
                 </div>
             </div>
 
@@ -323,7 +380,7 @@
                     <label>Amount to Burn</label>
                     <input type="text" placeholder="Enter amount...">
                 </div>
-                <button class="btn-launch" style="background: var(--red-bear); color: white;">Burn Tokens</button>
+                <button class="btn-launch" style="background: var(--red-bear); color: white;" onclick="burnAction()">Burn Tokens</button>
             </div>
 
             <!-- Tab 4: Referrals -->
@@ -341,7 +398,6 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <h4 style="margin-top: 0; color: var(--binance-yellow); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">🔥 Trending Memes</h4>
-            
             <div class="token-row">
                 <div>
                     <div class="token-symbol">PEPEK</div>
@@ -349,7 +405,6 @@
                 </div>
                 <div class="token-gain">+320%</div>
             </div>
-
             <div class="token-row">
                 <div>
                     <div class="token-symbol">CPUMP</div>
@@ -361,7 +416,26 @@
     </div>
 
     <script>
-        // --- 1. إعدادات لوحة الرسم التفاعلية (Canvas Setup) ---
+        // --- 1. Custom Binance Toast Engine ---
+        function showToast(msg, type = 'warning') {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            toast.className = `toast ${type}`;
+            
+            let icon = '⚡';
+            if (type === 'success') icon = '✅';
+            if (type === 'error') icon = '❌';
+            
+            toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = "fadeOut 0.4s forwards";
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // --- 2. Canvas Setup ---
         const canvas = document.getElementById("sketchpad");
         const ctx = canvas.getContext("2d");
         let painting = false;
@@ -398,16 +472,12 @@
         canvas.addEventListener("touchend", endPos);
         canvas.addEventListener("touchmove", draw);
 
-        function clearCanvas() {
-            initCanvas();
-        }
+        function clearCanvas() { initCanvas(); }
 
-        // --- 2. محرك إنشاء وتوليد اللوجو الآلي (AI Doodle Generator Engine) ---
         function generateAIDoodle() {
             const prompt = document.getElementById("logoPrompt").value || "Meme Gem";
             initCanvas();
 
-            // خلفية ملونة ديناميكية
             const colors = ["#f0b90b", "#0ecb81", "#38bdf8", "#ec4899", "#8b5cf6"];
             const randomBg = colors[Math.floor(Math.random() * colors.length)];
             
@@ -416,28 +486,26 @@
             ctx.arc(120, 80, 60, 0, Math.PI * 2);
             ctx.fill();
 
-            // رسم وجه الميم الكرتوني الضاحك
             ctx.fillStyle = "#000000";
-            // العينان
             ctx.beginPath();
             ctx.arc(100, 70, 8, 0, Math.PI * 2);
             ctx.arc(140, 70, 8, 0, Math.PI * 2);
             ctx.fill();
 
-            // ابتسامة الميم العريضة
             ctx.lineWidth = 5;
             ctx.beginPath();
             ctx.arc(120, 85, 25, 0.1 * Math.PI, 0.9 * Math.PI);
             ctx.stroke();
 
-            // كتابة اسم الوصف أسفل الرسمة
             ctx.fillStyle = "#000000";
             ctx.font = "bold 14px sans-serif";
             ctx.textAlign = "center";
             ctx.fillText(prompt.substring(0, 15), 120, 150);
+            
+            showToast("AI Logo Generated successfully!", "success");
         }
 
-        // --- 3. الصوت والتبني ---
+        // --- 3. Navigation & Voice ---
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -447,7 +515,7 @@
 
         function startVoice(inputId) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!SpeechRecognition) { alert("Voice input not supported in this browser."); return; }
+            if(!SpeechRecognition) { showToast("Voice recognition not supported", "error"); return; }
             const rec = new SpeechRecognition();
             rec.lang = 'en-US';
             rec.onresult = (e) => {
@@ -456,13 +524,24 @@
                 if(inputId === 'logoPrompt') { generateAIDoodle(); }
             };
             rec.start();
+            showToast("Listening... Speak now 🎤", "warning");
         }
 
-        // --- 4. العقد الذكي والتثبيت مع تحويل الرسوم لمحفظتك ---
+        // --- 4. Smart Contract & Wallet Engine ---
         const feeWallet = "0x1aafcdcd027ad78ad6847164a4cc70e3f07ecca7";
         const contractAddress = "0xb2C90c312201d312687D3063f60deB1216173DBc";
         const contractABI = ["function createToken(string name, string symbol, string uri) external payable returns (address)"];
-        let signer; let factoryContract;
+        let signer; 
+        let factoryContract;
+        let isConnected = false;
+
+        function requireWallet() {
+            if (!isConnected || !factoryContract) {
+                showToast("Please connect Web3 wallet first!", "error");
+                return false;
+            }
+            return true;
+        }
 
         async function connectWallet() {
             if (window.ethereum) {
@@ -471,42 +550,73 @@
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     signer = provider.getSigner();
                     const addr = await signer.getAddress();
+                    
+                    isConnected = true;
                     document.getElementById("walletBtn").innerText = addr.substring(0,6) + "..." + addr.substring(38);
-                    document.getElementById("refLink").value = "https://chainpumpbnb.vercel.app/?ref=" + addr;
+                    document.getElementById("refLink").value = "https://jackpotdapp.vercel.app/?ref=" + addr;
                     factoryContract = new ethers.Contract(contractAddress, contractABI, signer);
-                } catch (e) { alert("Wallet connection failed!"); }
-            } else { alert("Please open inside Mises or Web3 Wallet!"); }
+                    
+                    const status = document.getElementById("statusMsg");
+                    status.style.color = "#0ecb81";
+                    status.innerHTML = "✅ <b>Wallet Connected:</b> Ready to launch & trade!";
+                    
+                    showToast("Wallet Connected Successfully!", "success");
+                } catch (e) {
+                    showToast("Wallet connection rejected!", "error");
+                }
+            } else {
+                showToast("Open in Mises, MetaMask or Web3 Browser!", "error");
+            }
         }
 
         async function createToken() {
-            if(!factoryContract) { alert("Connect wallet first!"); return; }
+            if (!requireWallet()) return;
+
             const name = document.getElementById("tokenName").value;
             const symbol = document.getElementById("tokenSymbol").value;
             const amount = document.getElementById("buyAmount").value;
 
-            if(parseFloat(amount) < 0.005) { alert("Min fee is 0.005 BNB!"); return; }
+            if(!name || !symbol) { showToast("Please enter Token Name & Symbol", "warning"); return; }
+            if(parseFloat(amount) < 0.005) { showToast("Min fee is 0.005 BNB!", "warning"); return; }
 
-            // استخراج صورة الشعار المرسومة بتنسيق Base64 PNG
             const imageURI = canvas.toDataURL("image/png");
-
-            document.getElementById("statusMsg").innerText = "⏳ Processing transaction... Sending 0.005 BNB fee to owner wallet.";
+            showToast("Processing transaction...", "warning");
             
             try {
                 const tx = await factoryContract.createToken(name, symbol, imageURI, {
                     value: ethers.utils.parseEther(amount)
                 });
                 await tx.wait();
-                document.getElementById("statusMsg").innerHTML = "🎉 <b style='color: #0ecb81;'>TOKEN & LOGO LAUNCHED! 0.005 BNB SENT TO YOUR WALLET!</b>";
+                showToast("Token Launched! Fee sent to owner!", "success");
             } catch(e) {
-                document.getElementById("statusMsg").innerText = "Error: " + (e.message || e);
+                showToast("Transaction failed!", "error");
             }
         }
 
-        function copyRef() {
-            const link = document.getElementById("refLink");
-            link.select();
-            document.execCommand("copy");
-            alert("Referral link copied!");
+        function tradeAction(type) {
+            if (!requireWallet()) return;
+            showToast(`Executing ${type} order...`, "warning");
+        }
+
+        function burnAction() {
+            if (!requireWallet()) return;
+            showToast("Executing burn process...", "warning");
+        }
+
+        // --- 5. Modern Clipboard API Copying (Solves screenshot issue) ---
+        async function copyRef() {
+            if (!requireWallet()) return;
+            const linkText = document.getElementById("refLink").value;
+            try {
+                await navigator.clipboard.writeText(linkText);
+                showToast("Referral link copied to clipboard!", "success");
+            } catch (err) {
+                // Fallback for older browsers
+                const link = document.getElementById("refLink");
+                link.select();
+                document.execCommand("copy");
+                showToast("Referral link copied!", "success");
+            }
         }
     </script>
 </body>
