@@ -40,7 +40,7 @@
             gap: 10px;
             pointer-events: none;
             width: 90%;
-            max-width: 380px;
+            max-width: 400px;
         }
         .toast {
             background: #181a20;
@@ -261,21 +261,23 @@
         .token-symbol { font-weight: bold; color: var(--text-primary); }
         .token-gain { color: var(--green-bull); font-weight: bold; }
 
+        /* === Binance Specific Alert Box === */
         .alert-status-box {
             background: #2b220a;
             border: 1px solid var(--binance-yellow);
             color: var(--binance-yellow);
-            padding: 10px;
-            border-radius: 4px;
+            padding: 12px;
+            border-radius: 6px;
             text-align: center;
             margin-top: 15px;
             font-size: 13px;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
-    <!-- Container for Smooth Toast Alerts -->
+    <!-- Toast Notifications Container -->
     <div id="toastContainer" class="toast-container"></div>
 
     <!-- Header -->
@@ -355,8 +357,9 @@
 
                 <button class="btn-launch" onclick="createToken()">🚀 Launch Token (0.005 BNB)</button>
                 
+                <!-- Updated Alert Banner explicitly mentioning Binance Web3 Wallet -->
                 <div class="alert-status-box" id="statusMsg">
-                    ⚠️ Status: Wallet Not Connected. Click 'Connect Wallet' or open in Web3 Browser (Mises/Kiwi/MetaMask).
+                    ⚠️ <b>الحالة:</b> المحفظة غير متصلة. انقر على "Connect Wallet" أو افتحها في <b>محفظة بينانس (Binance Web3 Wallet)</b> أو متصفح Web3 (Mises / MetaMask).
                 </div>
             </div>
 
@@ -416,7 +419,7 @@
     </div>
 
     <script>
-        // --- 1. Custom Binance Toast Engine ---
+        // --- 1. Custom Binance Toast Notification Engine ---
         function showToast(msg, type = 'warning') {
             const container = document.getElementById("toastContainer");
             const toast = document.createElement("div");
@@ -432,10 +435,10 @@
             setTimeout(() => {
                 toast.style.animation = "fadeOut 0.4s forwards";
                 setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            }, 3200);
         }
 
-        // --- 2. Canvas Setup ---
+        // --- 2. Canvas & Logo Creator ---
         const canvas = document.getElementById("sketchpad");
         const ctx = canvas.getContext("2d");
         let painting = false;
@@ -515,7 +518,7 @@
 
         function startVoice(inputId) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!SpeechRecognition) { showToast("Voice recognition not supported", "error"); return; }
+            if(!SpeechRecognition) { showToast("Voice input not supported on this device", "error"); return; }
             const rec = new SpeechRecognition();
             rec.lang = 'en-US';
             rec.onresult = (e) => {
@@ -527,7 +530,7 @@
             showToast("Listening... Speak now 🎤", "warning");
         }
 
-        // --- 4. Smart Contract & Wallet Engine ---
+        // --- 4. Wallet Provider & Binance Web3 Setup ---
         const feeWallet = "0x1aafcdcd027ad78ad6847164a4cc70e3f07ecca7";
         const contractAddress = "0xb2C90c312201d312687D3063f60deB1216173DBc";
         const contractABI = ["function createToken(string name, string symbol, string uri) external payable returns (address)"];
@@ -537,17 +540,20 @@
 
         function requireWallet() {
             if (!isConnected || !factoryContract) {
-                showToast("Please connect Web3 wallet first!", "error");
+                showToast("افتح الموقع عبر محفظة بينانس (Binance Web3 Wallet) أولاً!", "error");
                 return false;
             }
             return true;
         }
 
         async function connectWallet() {
-            if (window.ethereum) {
+            // دعم متصفح محفظة بينانس (Binance Web3) ومتصفحات Web3 الأخرى
+            const providerSource = window.binancew3w || window.ethereum;
+
+            if (providerSource) {
                 try {
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await providerSource.request({ method: 'eth_requestAccounts' });
+                    const provider = new ethers.providers.Web3Provider(providerSource);
                     signer = provider.getSigner();
                     const addr = await signer.getAddress();
                     
@@ -558,14 +564,14 @@
                     
                     const status = document.getElementById("statusMsg");
                     status.style.color = "#0ecb81";
-                    status.innerHTML = "✅ <b>Wallet Connected:</b> Ready to launch & trade!";
+                    status.innerHTML = "✅ <b>تم الاتصال بمحفظة بينانس بنجاح:</b> المنصة جاهزة للإطلاق والتداول!";
                     
-                    showToast("Wallet Connected Successfully!", "success");
+                    showToast("Binance Web3 Wallet Connected!", "success");
                 } catch (e) {
-                    showToast("Wallet connection rejected!", "error");
+                    showToast("فشل الاتصال بالمحفظة!", "error");
                 }
             } else {
-                showToast("Open in Mises, MetaMask or Web3 Browser!", "error");
+                showToast("يرجى فتح الموقع داخل تطبيق بينانس -> محفظة Web3!", "error");
             }
         }
 
@@ -576,46 +582,44 @@
             const symbol = document.getElementById("tokenSymbol").value;
             const amount = document.getElementById("buyAmount").value;
 
-            if(!name || !symbol) { showToast("Please enter Token Name & Symbol", "warning"); return; }
-            if(parseFloat(amount) < 0.005) { showToast("Min fee is 0.005 BNB!", "warning"); return; }
+            if(!name || !symbol) { showToast("يرجى إدخال اسم ورمز العملة", "warning"); return; }
+            if(parseFloat(amount) < 0.005) { showToast("الحد الأدنى للرسوم 0.005 BNB!", "warning"); return; }
 
             const imageURI = canvas.toDataURL("image/png");
-            showToast("Processing transaction...", "warning");
+            showToast("جاري إرسال المعاملة...", "warning");
             
             try {
                 const tx = await factoryContract.createToken(name, symbol, imageURI, {
                     value: ethers.utils.parseEther(amount)
                 });
                 await tx.wait();
-                showToast("Token Launched! Fee sent to owner!", "success");
+                showToast("تم إطلاق العملة وتحويل الرسوم لمحفظتك!", "success");
             } catch(e) {
-                showToast("Transaction failed!", "error");
+                showToast("فشلت المعاملة!", "error");
             }
         }
 
         function tradeAction(type) {
             if (!requireWallet()) return;
-            showToast(`Executing ${type} order...`, "warning");
+            showToast(`جاري تنفيذ أمر ${type}...`, "warning");
         }
 
         function burnAction() {
             if (!requireWallet()) return;
-            showToast("Executing burn process...", "warning");
+            showToast("جاري تنفيذ عملية الحرق...", "warning");
         }
 
-        // --- 5. Modern Clipboard API Copying (Solves screenshot issue) ---
         async function copyRef() {
             if (!requireWallet()) return;
             const linkText = document.getElementById("refLink").value;
             try {
                 await navigator.clipboard.writeText(linkText);
-                showToast("Referral link copied to clipboard!", "success");
+                showToast("تم نسخ رابط الإحالة بنجاح!", "success");
             } catch (err) {
-                // Fallback for older browsers
                 const link = document.getElementById("refLink");
                 link.select();
                 document.execCommand("copy");
-                showToast("Referral link copied!", "success");
+                showToast("تم نسخ رابط الإحالة!", "success");
             }
         }
     </script>
