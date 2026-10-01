@@ -1,537 +1,135 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChainPump BNB | Binance Web3 Launchpad</title>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <title>Nexus Alpha War Room | Autonomous Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-        :root {
-            --bg-main: #0b0e11;
-            --bg-card: #181a20;
-            --bg-input: #2b313a;
-            --binance-yellow: #f0b90b;
-            --binance-yellow-hover: #fcd535;
-            --text-primary: #eaecef;
-            --text-muted: #848e9c;
-            --green-bull: #0ecb81;
-            --red-bear: #f6465d;
-            --border-color: #2b313a;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 0;
-            font-size: 14px;
-        }
-
-        /* === Binance Toast Notification System === */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-            width: 90%;
-            max-width: 400px;
-        }
-        .toast {
-            background: #181a20;
-            border: 1px solid var(--binance-yellow);
-            color: var(--text-primary);
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideDown 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
-            pointer-events: auto;
-            direction: rtl;
-            text-align: right;
-        }
-        .toast.success { border-color: var(--green-bull); }
-        .toast.error { border-color: var(--red-bear); }
-        .toast.warning { border-color: var(--binance-yellow); }
-
-        @keyframes slideDown {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-20px); }
-        }
-
-        /* === Header & Layout === */
-        .header {
-            background-color: var(--bg-card);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--binance-yellow);
-        }
-        .network-badge {
-            background: #202630;
-            color: var(--binance-yellow);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            border: 1px solid var(--binance-yellow);
-        }
-        .connect-btn {
-            background-color: var(--binance-yellow);
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .connect-btn:hover { background-color: var(--binance-yellow-hover); }
-
-        .ticker-bar {
-            background-color: #12161c;
-            padding: 8px 20px;
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .ticker-item span { color: var(--green-bull); font-weight: bold; }
-
-        .main-layout {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 15px;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 15px;
-        }
-        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
-
-        .nav-tabs {
-            display: flex;
-            gap: 5px;
-            background: var(--bg-card);
-            padding: 5px;
-            border-radius: 8px 8px 0 0;
-            border: 1px solid var(--border-color);
-            border-bottom: none;
-        }
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 4px;
-            transition: 0.2s;
-        }
-        .tab-btn.active {
-            background-color: var(--bg-input);
-            color: var(--binance-yellow);
-        }
-
-        .tab-content {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 0 0 8px 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .form-group { margin-bottom: 15px; position: relative; }
-        label { display: block; color: var(--text-muted); margin-bottom: 5px; font-size: 12px; }
-        input[type="text"] {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 10px 40px 10px 10px;
-            border-radius: 4px;
-            box-sizing: border-box;
-            outline: none;
-        }
-        input[type="text"]:focus { border-color: var(--binance-yellow); }
-        .mic-btn {
-            position: absolute;
-            right: 8px;
-            top: 28px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .mic-btn:hover { color: var(--binance-yellow); }
-
-        .logo-box-container {
-            background: var(--bg-input);
-            border: 1px dashed var(--binance-yellow);
-            border-radius: 6px;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        canvas {
-            background: #ffffff;
-            border-radius: 6px;
-            cursor: crosshair;
-            touch-action: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-        .canvas-tools {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .tool-btn {
-            background: #333d4b;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .tool-btn:hover { background: #475467; }
-
-        .jackpot-banner {
-            background: linear-gradient(130deg, #1e1b11 0%, #2b220a 100%);
-            border: 1px solid var(--binance-yellow);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .jackpot-val { font-size: 24px; font-weight: bold; color: var(--binance-yellow); }
-
-        .btn-launch {
-            width: 100%;
-            background-color: var(--binance-yellow);
-            color: #000;
-            border: none;
-            padding: 14px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-launch:hover { background-color: var(--binance-yellow-hover); }
-
-        .sidebar {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-        }
-        .token-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .token-row:last-child { border: none; }
-        .token-symbol { font-weight: bold; color: var(--text-primary); }
-        .token-gain { color: var(--green-bull); font-weight: bold; }
-
-        /* === Professional Status Box === */
-        .alert-status-box {
-            background: #2b220a;
-            border: 1px solid var(--binance-yellow);
-            color: var(--binance-yellow);
-            padding: 12px;
-            border-radius: 6px;
-            text-align: right;
-            direction: rtl;
-            margin-top: 15px;
-            font-size: 13px;
-            line-height: 1.6;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Cairo:wght@400;700&display=swap');
+        body { font-family: 'Cairo', 'Orbitron', sans-serif; background-color: #030712; color: #f3f4f6; }
+        .cyber-border { border: 1px solid rgba(168, 85, 247, 0.4); box-shadow: 0 0 20px rgba(168, 85, 247, 0.15); }
+        .glow-text { text-shadow: 0 0 10px rgba(168, 85, 247, 0.7); }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between p-4 md:p-8">
 
-    <!-- Toast Container -->
-    <div id="toastContainer" class="toast-container"></div>
-
-    <!-- Header -->
-    <div class="header">
-        <div class="logo-area">
-            <span>⚡ ChainPump</span>
-            <span class="network-badge">BNB CHAIN</span>
+    <!-- Header / Nav -->
+    <header className="max-w-6xl mx-auto w-full flex justify-between items-center border-b border-purple-900/50 pb-4 mb-8">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <div class="w-4 h-4 bg-purple-500 rounded-full animate-ping"></div>
+            <h1 class="text-2xl font-black tracking-wider text-purple-400 glow-text">NEXUS AI <span class="text-xs text-cyan-400 border border-cyan-500 px-2 py-0.5 rounded">WAR ROOM v5.5</span></h1>
         </div>
-        <button class="connect-btn" id="walletBtn" onclick="connectWallet()">Connect Wallet</button>
-    </div>
+        <button id="connectWallet" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
+            ربط المحفظة
+        </button>
+    </header>
 
-    <!-- Ticker Bar -->
-    <div class="ticker-bar">
-        <div class="ticker-item">Creation Fee: <span>0.005 BNB</span></div>
-        <div class="ticker-item">BNB/USD: <span>$778.50</span></div>
-        <div class="ticker-item">24h Tokens Launched: <span>142</span></div>
-        <div class="ticker-item">Total LP Burned: <span>100%</span></div>
-    </div>
-
-    <!-- Main Layout -->
-    <div class="main-layout">
-        <div>
-            <!-- Navigation Tabs -->
-            <div class="nav-tabs">
-                <button class="tab-btn active" onclick="showTab('launchTab')">🚀 Launchpad</button>
-                <button class="tab-btn" onclick="showTab('tradeTab')">📈 Bonding Curve</button>
-                <button class="tab-btn" onclick="showTab('burnTab')">🔥 Burn Portal</button>
-                <button class="tab-btn" onclick="showTab('refTab')">🎁 Referrals</button>
+    <!-- Main War Room Grid -->
+    <main class="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        
+        <!-- Left Column: Live Stats & Timers -->
+        <div class="space-y-6">
+            <div class="cyber-border bg-gray-900/60 p-6 rounded-2xl backdrop-blur-md">
+                <h3 class="text-gray-400 text-sm mb-2 font-bold">حالة النظام الآلي</h3>
+                <div class="text-xl font-black text-cyan-400" id="contractStage">مرحلة قيد التحميل...</div>
+                <div class="mt-4 text-xs text-gray-500">سيولة العقد الفعلية (BNB):</div>
+                <div class="text-lg font-bold text-green-400" id="totalLiquidity">-- BNB</div>
             </div>
 
-            <!-- Tab 1: Launchpad -->
-            <div id="launchTab" class="tab-content">
-                <div class="jackpot-banner">
+            <div class="cyber-border bg-gray-900/60 p-6 rounded-2xl backdrop-blur-md relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
+                <h3 class="text-purple-400 text-sm font-bold mb-1">🔥 عداد جائزة الفومو (Jackpot)</h3>
+                <div class="text-3xl font-black text-yellow-400 my-2" id="jackpotCountdown">00:00</div>
+                <div class="text-xs text-gray-400">آخر مشترٍ مسيطر: <span id="lastBuyerAddress" class="text-cyan-300 truncate block font-mono text-xs">--</span></div>
+            </div>
+        </div>
+
+        <!-- Center Column: Trading Terminal (Buy / Sell) -->
+        <div class="cyber-border bg-gray-900/80 p-6 rounded-2xl backdrop-blur-md md:col-span-2 flex flex-col justify-between">
+            <div>
+                <div class="flex border-b border-gray-800 mb-6">
+                    <button id="tabBuy" class="flex-1 pb-3 text-purple-400 font-bold border-b-2 border-purple-500 transition-all">شراء فوري</button>
+                    <button id="tabSell" class="flex-1 pb-3 text-gray-500 font-bold hover:text-gray-300 transition-all">بيع الأصول</button>
+                </div>
+
+                <!-- Buy Panel -->
+                <div id="buyPanel" class="space-y-4">
                     <div>
-                        <div style="color: var(--text-muted); font-size: 11px;">BINANCE GRAND JACKPOT</div>
-                        <div class="jackpot-val">6.48 BNB</div>
+                        <label class="block text-xs text-gray-400 mb-2">المبلغ المراد استثماره (BNB)</label>
+                        <input type="number" id="bnbInput" placeholder="0.1" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 font-mono">
                     </div>
-                    <div style="text-align: right;">
-                        <div style="color: var(--binance-yellow); font-family: monospace; font-size: 16px;">⏳ 00:08:45</div>
-                        <div style="font-size: 10px; color: var(--text-muted);">Timer resets on every launch</div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">محفظة المُحيل (Referral - اختياري)</label>
+                        <input type="text" id="refInput" placeholder="0x..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white text-xs font-mono focus:outline-none focus:border-purple-500">
                     </div>
+                    <button id="executeBuy" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01]">
+                        تنفيذ الشراء الذكي 🚀
+                    </button>
                 </div>
 
-                <div class="form-group">
-                    <label>Token Name</label>
-                    <input type="text" id="tokenName" placeholder="e.g. Binance Doge">
-                    <button class="mic-btn" onclick="startVoice('tokenName')">🎤</button>
-                </div>
-
-                <div class="form-group">
-                    <label>Token Symbol</label>
-                    <input type="text" id="tokenSymbol" placeholder="e.g. BDOGE">
-                    <button class="mic-btn" onclick="startVoice('tokenSymbol')">🎤</button>
-                </div>
-
-                <div class="form-group">
-                    <label>Logo Generation Prompt (Voice or Text)</label>
-                    <input type="text" id="logoPrompt" placeholder="e.g. Cute Pepe Rocket Moon...">
-                    <button class="mic-btn" onclick="startVoice('logoPrompt')">🎤</button>
-                </div>
-
-                <div class="logo-box-container">
-                    <label style="color: var(--binance-yellow); margin-bottom: 8px;">🎨 Interactive Logo Canvas & Preview</label>
-                    <canvas id="sketchpad" width="240" height="160"></canvas>
-                    
-                    <div class="canvas-tools">
-                        <input type="color" id="brushColor" value="#f0b90b" style="background:none; border:none; cursor:pointer; width:30px; height:30px;">
-                        <button class="tool-btn" onclick="generateAIDoodle()">🤖 توليد شعار بالذكاء الاصطناعي</button>
-                        <button class="tool-btn" onclick="clearCanvas()" style="background:#f6465d;">🗑️ مسح</button>
+                <!-- Sell Panel (Hidden by default) -->
+                <div id="sellPanel" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">كمية التوكنات للبيع</label>
+                        <input type="number" id="tokenInput" placeholder="1000" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 font-mono">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Initial Buy Amount (Min: 0.005 BNB)</label>
-                    <input type="text" id="buyAmount" value="0.005">
-                </div>
-
-                <button class="btn-launch" onclick="createToken()">🚀 إطلاق العملة (0.005 BNB)</button>
-                
-                <!-- Professional Status Message -->
-                <div class="alert-status-box" id="statusMsg">
-                    ⚡ <b>الحالة:</b> غير متصل. يرجى ربط المحفظة للتمكن من إطلاق العملات والتفاعل مع الرسوم البيانية.
+                    <button id="executeSell" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01]">
+                        تنفيذ البيع الفوري 🛡️
+                    </button>
                 </div>
             </div>
 
-            <!-- Tab 2: Trade -->
-            <div id="tradeTab" class="tab-content" style="display: none;">
-                <h4 style="margin-top: 0; color: var(--binance-yellow);">منحنى السعر والسيولة (Bonding Curve)</h4>
-                
-                <div style="background: var(--bg-input); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 15px; text-align: right; direction: rtl; font-size: 13px; line-height: 1.6;">
-                    <ul style="margin: 0; padding-right: 18px; color: var(--text-muted);">
-                        <li><strong style="color: var(--text-primary);">الانطلاق التدريجي:</strong> تبدأ كل عملة جديدة رحلتها عبر منحنى تسعير تدريجي يعكس حجم التفاعل والطلب.</li>
-                        <li><strong style="color: var(--text-primary);">لحظة التخرج:</strong> بمجرد وصول إجمالي السيولة إلى حد <span style="color: var(--binance-yellow); font-weight: bold;">5 BNB</span>، يتم إطلاق مرحلة التخرج آلياً دون تدخل بشري.</li>
-                        <li><strong style="color: var(--text-primary);">الأمان والسيولة:</strong> يسحب النظام السيولة المتراكمة وينقلها مباشرة إلى منصة <strong style="color: var(--text-primary);">PancakeSwap</strong> مع قفل السيولة نهائياً لضمان أعلى معايير الأمان للمستثمرين.</li>
-                    </ul>
+            <!-- VIP Node Purchase Section -->
+            <div class="mt-8 pt-6 border-t border-gray-800 flex justify-between items-center bg-purple-950/20 p-4 rounded-xl">
+                <div>
+                    <h4 class="font-bold text-purple-300 text-sm">شراء عقدة سيادة (Nexus Alpha Node)</h4>
+                    <p class="text-xs text-gray-400">سعر العقدة الحالي: <span id="vipPriceDisplay" class="text-yellow-400 font-bold">--</span> BNB</p>
                 </div>
-
-                <div style="background: var(--bg-input); height: 20px; border-radius: 4px; overflow: hidden; margin-bottom: 15px;">
-                    <div style="background: var(--green-bull); width: 45%; height: 100%; text-align: center; font-size: 11px; line-height: 20px; color: #000; font-weight: bold;">45% (4.5 / 5 BNB للوصول للتخرج)</div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-launch" style="background: var(--green-bull);" onclick="tradeAction('شراء')">شراء</button>
-                    <button class="btn-launch" style="background: var(--red-bear); color: white;" onclick="tradeAction('بيع')">بيع</button>
-                </div>
-            </div>
-
-            <!-- Tab 3: Burn -->
-            <div id="burnTab" class="tab-content" style="display: none;">
-                <h4 style="margin-top: 0; color: var(--red-bear);">🔥 بوابة الحرق الآمن</h4>
-                <p style="color: var(--text-muted); font-size: 12px; text-align: right; direction: rtl;">حرق جزء من المعروض لتقليص الكمية المتداولة وتعزيز القيمة السوقية.</p>
-                <div class="form-group">
-                    <label>الكمية المراد حرقها</label>
-                    <input type="text" placeholder="أدخل الكمية...">
-                </div>
-                <button class="btn-launch" style="background: var(--red-bear); color: white;" onclick="burnAction()">تنفيذ الحرق</button>
-            </div>
-
-            <!-- Tab 4: Referrals -->
-            <div id="refTab" class="tab-content" style="display: none;">
-                <h4 style="margin-top: 0; color: var(--binance-yellow);">🎁 برنامج الشراكة والأرباح</h4>
-                <p style="color: var(--text-muted); font-size: 12px; text-align: right; direction: rtl;">شارك رابط الإحالة الخاص بك واحصل على عوائد فورية نظير كل عملية تداول أو إطلاق عملة.</p>
-                <div class="form-group">
-                    <label>رابط الإحالة الخاص بك</label>
-                    <input type="text" id="refLink" readonly value="يرجى ربط المحفظة لعرض رابط الإحالة.">
-                </div>
-                <button class="btn-launch" onclick="copyRef()">نسخ الرابط</button>
+                <button id="buyVipBtn" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all">
+                    تفعيل العقدة ⚡
+                </button>
             </div>
         </div>
 
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <h4 style="margin-top: 0; color: var(--binance-yellow); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">🔥 الميمات الرائجة</h4>
-            <div class="token-row">
-                <div>
-                    <div class="token-symbol">PEPEK</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">MC: $45.2K</div>
-                </div>
-                <div class="token-gain">+320%</div>
-            </div>
-            <div class="token-row">
-                <div>
-                    <div class="token-symbol">CPUMP</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">MC: $12.8K</div>
-                </div>
-                <div class="token-gain">+145%</div>
-            </div>
-        </div>
-    </div>
+    </main>
+
+    <!-- Footer Status -->
+    <footer class="max-w-6xl mx-auto w-full text-center text-xs text-gray-600 border-t border-gray-900 pt-4">
+        100% Autonomous & Immutable Engine | Zero Honeypot Risk | Powered by Smart Algorithms
+    </footer>
 
     <script>
-        // --- Toast Notifications ---
-        function showToast(msg, type = 'warning') {
-            const container = document.getElementById("toastContainer");
-            const toast = document.createElement("div");
-            toast.className = `toast ${type}`;
-            
-            let icon = '⚡';
-            if (type === 'success') icon = '✅';
-            if (type === 'error') icon = '❌';
-            
-            toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
-            container.appendChild(toast);
+        // سكربت الربط البسيط (يتم تحديث عنوان العقد بعد نشره)
+        const CONTRACT_ADDRESS = "أدخل_عنوان_عقدك_هنا";
+        
+        document.getElementById('tabBuy').addEventListener('click', () => {
+            document.getElementById('buyPanel').classList.remove('hidden');
+            document.getElementById('sellPanel').classList.add('hidden');
+            document.getElementById('tabBuy').className = "flex-1 pb-3 text-purple-400 font-bold border-b-2 border-purple-500";
+            document.getElementById('tabSell').className = "flex-1 pb-3 text-gray-500 font-bold hover:text-gray-300";
+        });
 
-            setTimeout(() => {
-                toast.style.animation = "fadeOut 0.4s forwards";
-                setTimeout(() => toast.remove(), 400);
-            }, 3200);
-        }
+        document.getElementById('tabSell').addEventListener('click', () => {
+            document.getElementById('sellPanel').classList.remove('hidden');
+            document.getElementById('buyPanel').classList.add('hidden');
+            document.getElementById('tabSell').className = "flex-1 pb-3 text-purple-400 font-bold border-b-2 border-purple-500";
+            document.getElementById('tabBuy').className = "flex-1 pb-3 text-gray-500 font-bold hover:text-gray-300";
+        });
 
-        // --- Canvas & Logo Creator ---
-        const canvas = document.getElementById("sketchpad");
-        const ctx = canvas.getContext("2d");
-        let painting = false;
-
-        function initCanvas() {
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-        initCanvas();
-
-        function startPos(e) { painting = true; draw(e); }
-        function endPos() { painting = false; ctx.beginPath(); }
-        function draw(e) {
-            if (!painting) return;
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-            ctx.lineWidth = 4;
-            ctx.lineCap = "round";
-            ctx.strokeStyle = document.getElementById("brushColor").value;
-
-            ctx.lineTo(clientX - rect.left, clientY - rect.top);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(clientX - rect.left, clientY - rect.top);
-        }
-
-        canvas.addEventListener("mousedown", startPos);
-        canvas.addEventListener("mouseup", endPos);
-        canvas.addEventListener("mousemove", draw);
-        canvas.addEventListener("touchstart", startPos);
-        canvas.addEventListener("touchend", endPos);
-        canvas.addEventListener("touchmove", draw);
-
-        function clearCanvas() { initCanvas(); }
-
-        function generateAIDoodle() {
-            const prompt = document.getElementById("logoPrompt").value || "Meme Gem";
-            initCanvas();
-            const colors = ["#f0b90b", "#0ecb81", "#f6465d", "#333333"];
-            ctx.strokeStyle = colors[Math.floor(Math.random() * colors.length)];
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.arc(120, 80, 45, 0, Math.PI * 2);
-            ctx.stroke();
-            showToast("تم توليد الشعار بنجاح", "success");
-        }
-
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).style.display = 'block';
-            event.currentTarget.classList.add('active');
-        }
-
-        function connectWallet() {
-            showToast("يرجى الفتح عبر متصفح محفظة بينانس (Binance Web3)", "warning");
-        }
-
-        function startVoice(fieldId) {
-            showToast("جارِ الاستماع للصوت...", "warning");
-            setTimeout(() => {
-                document.getElementById(fieldId).value = "Binance Rocket";
-                showToast("تم إدخال النص بنجاح", "success");
-            }, 1500);
-        }
-
-        function tradeAction(actionType) {
-            showToast(`تم إرسال أمر الـ ${actionType} بنجاح`, "success");
-        }
-
-        function burnAction() {
-            showToast("تم تنفيذ عملية الحرق بنجاح", "success");
-        }
-
-        function copyRef() {
-            showToast("يرجى ربط المحفظة أولاً لنسخ الرابط", "warning");
-        }
+        document.getElementById('connectWallet').addEventListener('click', async () => {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    document.getElementById('connectWallet').innerText = accounts[0].substring(0, 6) + "..." + accounts[0].substring(38);
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                alert('يرجى تثبيت محفظة Web3 مثل MetaMask أو Binance Web3 Wallet');
+            }
+        });
     </script>
 </body>
 </html>
-
